@@ -11,9 +11,8 @@ function Game(canvas, levels) {
   function start() {
     stage = new createjs.Stage(canvas);
     level = new Level(levels[currentLevel], stage, 600);
-    level.addToStage();
     overlay = new Overlay(stage, levels[currentLevel].length, level.getGroundDimension());
-    player = new Player(level.startPos().getBounds(), stage);
+    player = new Player(level.getStartPos().getBounds(), stage);
     overlay.update(player);
   }
 
