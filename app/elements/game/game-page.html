@@ -9,6 +9,7 @@
       }
     </style>
 			<canvas id="demoCanvas" width="600" height="600" style="border: 1px solid black;"></canvas>
+			<button on-click="godmode">God mode</button>
   </template>
 	<script src="level.js"></script>
 	<script src="player.js"></script>
@@ -26,12 +27,16 @@
         },
 				ready: function(){
 					var level = [
-						['s',0,0,0,0,1],
-						[1,1,1,1,0,1],
-						[1,1,1,1,0,1],
-						[1,0,0,0,0,1],
-						[1,0,1,1,0,1],
-						[1,0,1,0,0,'f'],
+						['s',0,0,0,0,1,1,1,1,1],
+						[1,1,1,1,0,1, 1,1,1,1],
+						[1,1,1,1,0,1,1,1,1,1],
+						[1,0,0,0,0,1,1,1,1,1],
+						[1,0,1,1,0,1,1,1,1,1],
+						[1,0,0,0,0,1,1,1,1,1],
+						[1,0,1,1,0,1,1,1,1,1],
+						[1,0,0,0,0,1,1,1,1,1],
+						[1,0,1,1,0,1,1,1,1,1],
+						[1,0,1,0,0,'f',1,1,1,1],
 					];
 					var level2 = [
 						['s',0,1,0,0,1],
@@ -43,8 +48,12 @@
 					];
 
 					var levels = [level, level2];
-					var game = new Game(this.document, this.$.demoCanvas, levels);
-					game.start();
+					this.game = new Game(this.$.demoCanvas, levels);
+					this.game.start();
+				},
+				godmode: function(){
+					console.log('god')
+					this.game.godmode();
 				}
       });
     })();

@@ -1,4 +1,4 @@
-function Game(d, canvas, levels){
+function Game(canvas, levels){
 	var KEYCODE_LEFT = 37,
 		KEYCODE_RIGHT = 39,
 		KEYCODE_UP = 38,
@@ -6,6 +6,7 @@ function Game(d, canvas, levels){
 	var currentLevel = 0;
 	document.onkeydown = keyPressed
 	var stage, level, player, overlay;
+	var godmode = false;
 	function start(){
 		stage = new createjs.Stage(canvas);
 		level = new Level(levels[currentLevel], stage, 600);
@@ -45,11 +46,12 @@ function Game(d, canvas, levels){
 			return;
 		}
 		player.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
-		overlay.update(player);
+		overlay.update(player, godmode);
 
 		stage.update();
 	}
 	return {
-		start: start
+		start: start,
+		godmode: function(){ godmode = !godmode; overlay.update(player, godmode)}
 	}
 }

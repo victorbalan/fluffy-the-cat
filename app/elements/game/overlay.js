@@ -18,13 +18,16 @@ function Overlay(stage, n, squareLength){
 	}
 	stage.update();
 
-	function update(player){
+	function update(player, godmode){
 		// player`s current position in the matrix
 		var ci = Math.round(player.getBounds().y/(squareLength + 1));
 		var cj = Math.round(player.getBounds().x/(squareLength + 1));
 		for(var i=0;i<overlay.length;i++){
 			var overlayRow = overlay[i];
 			for(var j=0;j<overlayRow.length;j++){
+				if(godmode){
+					overlay[i][j].alpha = 0;
+				}else{
 					if(i===ci && j===cj){
 						overlay[i][j].alpha = 0;
 					}else if((i===ci-1 && j===cj) || (i===ci+1 && j===cj) || (j===cj-1 && i===ci) 	|| (j===cj+1 && i===ci)){
@@ -33,6 +36,7 @@ function Overlay(stage, n, squareLength){
 						overlay[i][j].alpha = 1;
 					}
 				}
+			}
 		}
 		stage.update();
 	}
