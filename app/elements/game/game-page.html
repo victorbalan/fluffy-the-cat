@@ -8,53 +8,52 @@
         display: block;
       }
     </style>
-			<canvas id="demoCanvas" width="600" height="600" style="border: 1px solid black;"></canvas>
-			<button on-click="godmode">God mode</button>
+    <canvas id="demoCanvas" width="600" height="600" style="border: 1px solid black;"></canvas>
+    <button on-click="godmode">God mode</button>
   </template>
-	<script src="level.js"></script>
-	<script src="player.js"></script>
-	<script src="game.js"></script>
-	<script src="overlay.js"></script>
-	<script src="intersections.js"></script>
-	<script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+  <script src="level.js"></script>
+  <script src="player.js"></script>
+  <script src="game.js"></script>
+  <script src="overlay.js"></script>
+  <script src="intersections.js"></script>
+  <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
   <script>
-    (function() {
+    (function () {
       'use strict';
 
       Polymer({
         is: 'game-page',
-        properties: {
-        },
-				ready: function(){
-					var level = [
-						['s',0,0,0,0,1,1,1,1,1],
-						[1,1,1,1,0,1, 1,1,1,1],
-						[1,1,1,1,0,1,1,1,1,1],
-						[1,0,0,0,0,1,1,1,1,1],
-						[1,0,1,1,0,1,1,1,1,1],
-						[1,0,0,0,0,1,1,1,1,1],
-						[1,0,1,1,0,1,1,1,1,1],
-						[1,0,0,0,0,1,1,1,1,1],
-						[1,0,1,1,0,1,1,1,1,1],
-						[1,0,1,0,0,'f',1,1,1,1],
-					];
-					var level2 = [
-						['s',0,1,0,0,1],
-						[1,0,1,1,0,1],
-						[1,0,1,1,0,1],
-						[1,0,0,0,0,0],
-						[1,1,1,1,0,1],
-						['f',0,0,0,0,1],
-					];
+        properties: {},
+        ready: function () {
+          var level = [
+            ['s', 0, 0, 0, 0, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+            [1, 0, 1, 1, 0, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+            [1, 0, 1, 1, 0, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+            [1, 0, 1, 1, 0, 1, 1, 1, 1, 1],
+            [1, 0, 1, 0, 0, 'f', 1, 1, 1, 1],
+          ];
+          var level2 = [
+            ['s', 0, 1, 0, 0, 1],
+            [1, 0, 1, 1, 0, 1],
+            [1, 0, 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0],
+            [1, 1, 1, 1, 0, 1],
+            ['f', 0, 0, 0, 0, 1],
+          ];
 
-					var levels = [level, level2];
-					this.game = new Game(this.$.demoCanvas, levels);
-					this.game.start();
-				},
-				godmode: function(){
-					console.log('god')
-					this.game.godmode();
-				}
+          var levels = [level, level2];
+          this.game = new Game(this.$.demoCanvas, levels);
+          this.game.start();
+        },
+        godmode: function () {
+          console.log('god')
+          this.game.godmode();
+        }
       });
     })();
   </script>
