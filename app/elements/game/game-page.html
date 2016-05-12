@@ -1,0 +1,52 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-styles/typography.html">
+
+<dom-module id="game-page">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+    </style>
+			<canvas id="demoCanvas" width="600" height="600" style="border: 1px solid black;"></canvas>
+  </template>
+	<script src="level.js"></script>
+	<script src="player.js"></script>
+	<script src="game.js"></script>
+	<script src="overlay.js"></script>
+	<script src="intersections.js"></script>
+	<script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'game-page',
+        properties: {
+        },
+				ready: function(){
+					var level = [
+						['s',0,0,0,0,1],
+						[1,1,1,1,0,1],
+						[1,1,1,1,0,1],
+						[1,0,0,0,0,1],
+						[1,0,1,1,0,1],
+						[1,0,1,0,0,'f'],
+					];
+					var level2 = [
+						['s',0,1,0,0,1],
+						[1,0,1,1,0,1],
+						[1,0,1,1,0,1],
+						[1,0,0,0,0,0],
+						[1,1,1,1,0,1],
+						['f',0,0,0,0,1],
+					];
+
+					var levels = [level, level2];
+					var game = new Game(this.document, this.$.demoCanvas, levels);
+					game.start();
+				}
+      });
+    })();
+  </script>
+</dom-module>
