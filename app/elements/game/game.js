@@ -1,61 +1,72 @@
-function Game(canvas, levels) {
-  var KEYCODE_LEFT = 37,
-    KEYCODE_RIGHT = 39,
-    KEYCODE_UP = 38,
-    KEYCODE_DOWN = 40;
-  var currentLevel = 0;
-  document.onkeydown = keyPressed
-  var stage, level, player, overlay;
-  var godmode = false;
+const KEYCODE_LEFT = 37;
+const KEYCODE_RIGHT = 39;
+const KEYCODE_UP = 38;
+const KEYCODE_DOWN = 40;
+const SPEED = 10;
 
-  function start() {
-    stage = new createjs.Stage(canvas);
-    level = new Level(levels[currentLevel], stage, 600);
-    overlay = new Overlay(stage, levels[currentLevel].length, level.getGroundDimension());
-    player = new Player(level.getStartPos().getBounds(), stage);
-    overlay.update(player);
+class Game {
+  constructor(canvas, levels) {
+    this.currentLevel = 0;
+    this.canvas = canvas;
+    this.ctx = canvas.getContext("2d");
+    this.godmode = false;
+    this.levels = levels;
   }
 
-  function keyPressed(event) {
-    var bounds = player.getBounds();
+  start() {
+    this.stage = new createjs.Stage(this.canvas);
+    this.level = new Level(this.levels[this.currentLevel], this.stage, 600);
+    this.player = new Player(this.level.getStartPos().getBounds(), this.stage);
+    this.overlay = new Overlay(this.stage, this.levels[this.currentLevel].length, this.level.getGroundDimension());
+    this.overlay.update(this.player);
+    this.registerEvents();
+  }
+
+  registerEvents() {
+    (() => {
+      document.addEventListener('keydown', (event) => {
+        this.keyPressed(event);
+      })
+    })();
+  }
+
+  keyPressed(event) {
+    var bounds = this.player.getBounds();
     switch (event.keyCode) {
       case KEYCODE_LEFT:
-        bounds.x -= 10;
+        bounds.x -= SPEED;
         break;
       case KEYCODE_RIGHT:
-        bounds.x += 10;
+        bounds.x += SPEED;
         break;
       case KEYCODE_UP:
-        bounds.y -= 10;
+        bounds.y -= SPEED;
         break;
       case KEYCODE_DOWN:
-        bounds.y += 10;
+        bounds.y += SPEED;
         break;
     }
-    bounds.width = player.getPlayerDimension();
-    bounds.height = player.getPlayerDimension();
-    if (bounds.x < 0 || bounds.y < 0 || bounds.x > 600 - player.getPlayerDimension() || bounds.y > 600 - player.getPlayerDimension()) {
-      console.log('out of bounds')
+    bounds.width = this.player.getPlayerDimension();
+    bounds.height = this.player.getPlayerDimension();
+    if (bounds.x < 0 || bounds.y < 0 || bounds.x > 600 - this.player.getPlayerDimension() || bounds.y > 600 - this.player.getPlayerDimension()) {
+      console.log('out of bounds');
       return;
     }
-    if (level.checkAtFinish(bounds)) {
+    if (this.level.checkAtFinish(bounds)) {
       console.log('ggwp');
     }
-    if (level.checkWallCollision(bounds)) {
+    if (this.level.checkWallCollision(bounds)) {
       console.log('wall collision');
       return;
     }
-    player.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
-    overlay.update(player, godmode);
+    this.player.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+    this.overlay.update(this.player, this.godmode);
 
-    stage.update();
+    this.stage.update();
   }
 
-  return {
-    start: start,
-    godmode: function () {
-      godmode = !godmode;
-      overlay.update(player, godmode)
-    }
+  godMode() {
+    this.godmode = !this.godmode;
+    this.overlay.update(this.player, this.godmode)
   }
 }
