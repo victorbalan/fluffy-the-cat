@@ -26,12 +26,8 @@
 
       Polymer({
         is: 'game-page',
-        properties: {
-          dimension: {
-            value: 600
-          }
-        },
         ready: function () {
+					this.dimension = window.innerHeight < window.innerWidth ? window.innerHeight -50 : window.innerWidth - 50;
           var level = [
             ['s', 0, 0, 0, 0, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
