@@ -1,0 +1,31 @@
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="levels-provider">
+  <style>
+    :host {
+      display: none;
+    }
+  </style>
+  <template>
+    <iron-ajax
+      id="request"
+      auto
+      method="GET"
+      url="[[baseUrl]]/levels"
+      handle-as="json"
+      last-response="{{data}}">
+    </iron-ajax>
+  </template>
+  <script type="application/javascript" src="../../scripts/behaviors/general-provider-behavior.js"></script>
+  <script>
+    Polymer({
+      is: 'levels-provider',
+      behaviors: [
+        Behaviors.Providers.General
+      ],
+      refresh: function(){
+        this.$.request.generateRequest();
+      }
+    });
+  </script>
+</dom-module>

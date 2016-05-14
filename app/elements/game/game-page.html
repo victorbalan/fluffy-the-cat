@@ -1,15 +1,34 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+
+<link rel="import" href="levels-provider.html">
+<link rel="import" href="level-by-id-provider.html">
 
 <dom-module id="game-page">
   <template>
-    <style include="shared-styles">
+    <style include="iron-flex">
       :host {
         display: block;
       }
+
+      #wrapper {
+        @apply(--layout-horizontal);
+      }
     </style>
+    <levels-provider data="{{data}}"></levels-provider>
+    <level-by-id-provider id="[[selectedLevel.value]]" data="{{level}}"></level-by-id-provider>
+
     <canvas id="demoCanvas" width="[[dimension]]" height="[[dimension]]" style="border: 1px solid black;"></canvas>
-    <button on-click="godmode">God mode</button>
+    <paper-dropdown-menu selected-item="{{selectedLevel}}" style="position: fixed; top:0; right:0;">
+      <paper-menu id="loginAsMenu" class="dropdown-content">
+        <template is="dom-repeat" items="{{data}}">
+          <option value="{{item._id}}" style="width: 200px;">{{_getLabel(item)}}</option>
+        </template>
+      </paper-menu>
+    </paper-dropdown-menu>
   </template>
   <script src="levelmap.js"></script>
   <script src="level.js"></script>
@@ -27,42 +46,26 @@
 
       Polymer({
         is: 'game-page',
+        observers: [
+          '_levelChanged(level)'
+        ],
+        _getLabel: function (item) {
+          return 'd: ' + item.difficulty + ' sd: ' + item.subDifficulty;
+        },
+        _levelChanged: function (level) {
+          this.newgame(JSON.parse(level.map));
+        },
         ready: function () {
-					this.dimension = 600;//window.innerHeight < window.innerWidth ? window.innerHeight -50 : window.innerWidth - 50;
-          console.log(this.dimension)
-          var level = [
-            [0, 0, 0, 0, 's', 0, 0, 0, 0, 0],
-            [1, 1, 1, 1, 0, 1, 1, 0, 1, 1],
-            [1, 1, 1, 1, 0, 1, 1, 0, 1, 1],
-            [1, 0, 0, 0, 0, 1, 1, 0, 1, 1],
-            [1, 0, 1, 1, 0, 1, 1, 0, 1, 1],
-            [1, 0, 0, 0, 0, 1, 1, 0, 0, 1],
-            [1, 0, 1, 1, 1, 1, 1, 1, 0, 0],
-            [1, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [1, 0, 1, 1, 1, 0, 1, 0, 1, 0],
-            [1, 0, 1, 0, 1, 'f', 1, 0, 0, 0],
-          ];
-          var level2 = [
-            ['s', 0, 1, 0, 0, 1],
-            [1, 0, 1, 1, 0, 1],
-            [1, 0, 1, 1, 0, 1],
-            [1, 0, 0, 0, 0, 0],
-            [1, 1, 1, 1, 0, 1],
-            ['f', 0, 0, 0, 0, 1],
-          ];
-
-          var levels = [level, level2];
-          this.game = new Level(this.$.demoCanvas, level, this.dimension);
-          this.game.start();
+          this.dimension = 600;//window.innerHeight < window.innerWidth ? window.innerHeight -50 : window.innerWidth - 50;
         },
-        godmode: function () {
-          console.log('god')
-          this.game.godMode();
-        },
-        moveright: function(){
-          this.game.moveWalls('right');
+        newgame: function (level) {
+          if(!this.game){
+            this.game = new Game(this.$.demoCanvas, this.dimension);
+          }
+          this.game.startLevel(level);
         }
       });
     })();
   </script>
 </dom-module>
+
