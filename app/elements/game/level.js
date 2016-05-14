@@ -17,11 +17,16 @@ class Level {
   start() {
     this.stage = new createjs.Stage(this.canvas);
     this.map.addToStage(this.stage);
-    this.player = new Player(this.map.getStartPos().getBounds());
+
+    this.player = new Player(this.map.getStartPos().object.x, this.map.getStartPos().object.y, this.map.getStartPos().dimension/2);
     this.player.addToStage(this.stage);
+
     this.overlay = new Overlay(this.stage, this.mapLength, this.map.getGroundDimension());
     this.overlay.update(this.player);
+
     this.registerEvents();
+    console.log(this.player)
+    this.stage.update();
   }
 
   registerEvents() {
@@ -32,37 +37,39 @@ class Level {
     })();
   }
 
+  moveWalls(dir){
+    this.map.move(dir, this.stage);
+    this.stage.update();
+  }
+
   keyPressed(event) {
     var bounds = this.player.getBounds();
+    var x =0, y = 0;
     switch (event.keyCode) {
       case KEYCODE_LEFT:
-        bounds.x -= SPEED;
+        x = SPEED;
         break;
       case KEYCODE_RIGHT:
-        bounds.x += SPEED;
+        x = -SPEED;
         break;
       case KEYCODE_UP:
-        bounds.y -= SPEED;
+        y = SPEED;
         break;
       case KEYCODE_DOWN:
-        bounds.y += SPEED;
+        y = -SPEED;
         break;
     }
-    if (bounds.x < 0 || bounds.y < 0 || bounds.x > this.dimension - bounds.width || bounds.y > this.dimension - bounds.height) {
-      console.log('out of bounds');
-      return;
+    bounds.x = bounds.x - x;
+    bounds.y = bounds.y - y;
+    switch(this.map.getIntersectionType(bounds)){
+      case 'collision':
+        return;
+      case 'finish':
+        alert('ggwp');
+        break;
     }
-    if (this.map.checkAtFinish(bounds)) {
-      console.log('ggwp');
-    }
-    if (this.map.checkWallCollision(bounds)) {
-      console.log('wall collision');
-      return;
-    }
-    this.player.moveTo(bounds.x, bounds.y);
-    this.overlay.update(this.player, this.godmode);
+    this.map.move(x, y);
     this.stage.update();
-    console.log('updating stage');
   }
 
   godMode() {

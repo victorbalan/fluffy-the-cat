@@ -1,88 +1,85 @@
 
 class LevelMap {
   constructor(level, canvasDimension){
+    this.canvasDimension = canvasDimension;
     this.dimension = canvasDimension / level.length;
-    this.walls = [];
-    this.grass = [];
+    this.mapObjects = [];
+
 
     if (!level || level.length === 0 || !level[0] || (level.length !== level[0].length)) {
       console.log('level is not ok');
       return;
     }
+    var starti = 0;
+    var startj = 0;
     for (var i = 0; i < level.length; i++) {
       for (var j = 0; j < level[i].length; j++) {
-        var x = j * this.dimension;
-        var y = i * this.dimension;
+        if(level[i][j]==='s'){
+          starti = i;
+          startj = j;
+        }
+      }
+    }
+    for (var i = 0; i < level.length; i++) {
+      for (var j = 0; j < level[i].length; j++) {
+        var x = (j - startj -1) * this.dimension + this.canvasDimension/2;
+        var y = (i - starti -1) * this.dimension + this.canvasDimension/2;
         switch(level[i][j]){
           case 0:
-            this.grass.push(new Grass(x, y, this.dimension));
+            var grass = new Grass(x, y, this.dimension);
+            this.mapObjects.push(grass);
             break;
           case 1:
-            this.walls.push(new Wall(x, y, this.dimension));
+            var wall = new Wall(x, y, this.dimension);
+            this.mapObjects.push(wall);
             break;
           case 'f':
-            this.finish = new GameObject(x, y, 'red', this.dimension);
+            this.finish = new Finish(x, y, this.dimension);
+            this.mapObjects.push(this.finish);
             break;
           case 's':
             this.start = new Grass(x, y, this.dimension);
+            this.mapObjects.push(this.start);
             break;
         }
       }
     }
   }
 
+  move(xOfset , yOffset){
+    this.mapObjects.forEach(function (object) {
+      object.moveTo(object.object.x + xOfset , object.object.y + yOffset);
+    });
+  }
+
   addToStage(stage){
-    this.walls.forEach(function (wall) {
-      wall.addToStage(stage);
+    this.mapObjects.forEach(function (object) {
+      object.addToStage(stage);
     });
-    this.grass.forEach(function (wall) {
-      wall.addToStage(stage);
-    });
-    this.finish.addToStage(stage);
-    this.start.addToStage(stage);
-    stage.update();
   }
 
-  checkAtFinish(player) {
-    return checkIntersection(player, this.finish.getBounds());
-  }
-
-  checkWallCollision(player) {
-    for (var i = 0; i < this.walls.length; i++) {
-      if(this.walls[i].collidesWith(player)){
-        return true;
+  getIntersectionType(player){
+    var topLeft = this.mapObjects[0].getBounds();
+    var botRight = this.mapObjects[this.mapObjects.length - 1].getBounds();
+    if(player.x < topLeft.x || player.x > botRight.x + player.width||
+      player.y <  topLeft.y || player.y > botRight.y + player.height){
+      // out of bounds
+      return 'collision'
+    }
+    for (var i = 0; i < this.mapObjects.length; i++) {
+      var type = this.mapObjects[i].getIntersectionType(player)
+      if(type !== 'none'){
+        return type;
       }
     }
-    return false
+    return 'none';
   }
-
-  _wall(x, y) {
-    var wall = this._square(x, y, '#4d2600');
-    this.walls.push(wall);
-    return wall;
-  }
-
-  _finish(x, y) {
-    this.finishPos = this._square(x, y, 'red');
-    return this.finishPos;
-  }
-
-  _grass(x, y) {
-    return this._square(x, y, '#009933');
-  }
-
-  _square(x, y, color) {
-    var square = new createjs.Shape();
-    square.graphics.beginFill(color).drawRect(x, y, this.dimension, this.dimension);
-    square.setBounds(x, y, this.dimension, this.dimension);
-    return square;
-  }
-
+  
   getGroundDimension() {
     return this.dimension;
   }
 
   getStartPos() {
-    return this.start.object;
+    return this.start;
   }
 }
