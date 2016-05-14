@@ -16,6 +16,7 @@
   <script src="overlay.js"></script>
   <script src="intersections.js"></script>
   <script src="model/gameobject.js"></script>
+  <script src="model/finish.js"></script>
   <script src="model/grass.js"></script>
   <script src="model/player.js"></script>
   <script src="model/wall.js"></script>
@@ -27,18 +28,19 @@
       Polymer({
         is: 'game-page',
         ready: function () {
-					this.dimension = window.innerHeight < window.innerWidth ? window.innerHeight -50 : window.innerWidth - 50;
+					this.dimension = 600;//window.innerHeight < window.innerWidth ? window.innerHeight -50 : window.innerWidth - 50;
+          console.log(this.dimension)
           var level = [
-            ['s', 0, 0, 0, 0, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
-            [1, 0, 0, 0, 0, 1, 1, 1, 1, 1],
-            [1, 0, 1, 1, 0, 1, 1, 1, 1, 1],
-            [1, 0, 0, 0, 0, 1, 1, 1, 1, 1],
-            [1, 0, 1, 1, 0, 1, 1, 1, 1, 1],
-            [1, 0, 0, 0, 0, 1, 1, 1, 1, 1],
-            [1, 0, 1, 1, 0, 1, 1, 1, 1, 1],
-            [1, 0, 1, 0, 0, 'f', 1, 1, 1, 1],
+            [0, 0, 0, 0, 's', 0, 0, 0, 0, 0],
+            [1, 1, 1, 1, 0, 1, 1, 0, 1, 1],
+            [1, 1, 1, 1, 0, 1, 1, 0, 1, 1],
+            [1, 0, 0, 0, 0, 1, 1, 0, 1, 1],
+            [1, 0, 1, 1, 0, 1, 1, 0, 1, 1],
+            [1, 0, 0, 0, 0, 1, 1, 0, 0, 1],
+            [1, 0, 1, 1, 1, 1, 1, 1, 0, 0],
+            [1, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+            [1, 0, 1, 1, 1, 0, 1, 0, 1, 0],
+            [1, 0, 1, 0, 1, 'f', 1, 0, 0, 0],
           ];
           var level2 = [
             ['s', 0, 1, 0, 0, 1],
@@ -56,6 +58,9 @@
         godmode: function () {
           console.log('god')
           this.game.godMode();
+        },
+        moveright: function(){
+          this.game.moveWalls('right');
         }
       });
     })();
