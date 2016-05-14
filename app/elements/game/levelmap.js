@@ -2,7 +2,7 @@
 class LevelMap {
   constructor(level, canvasDimension){
     this.canvasDimension = canvasDimension;
-    this.dimension = canvasDimension / level.length;
+    this.dimension = canvasDimension / 10;
     this.mapObjects = [];
 
 
@@ -14,7 +14,7 @@ class LevelMap {
     var startj = 0;
     for (var i = 0; i < level.length; i++) {
       for (var j = 0; j < level[i].length; j++) {
-        if(level[i][j]==='s'){
+        if(level[i][j]===-1){
           starti = i;
           startj = j;
         }
@@ -33,11 +33,11 @@ class LevelMap {
             var wall = new Wall(x, y, this.dimension);
             this.mapObjects.push(wall);
             break;
-          case 'f':
+          case 2:
             this.finish = new Finish(x, y, this.dimension);
             this.mapObjects.push(this.finish);
             break;
-          case 's':
+          case -1:
             this.start = new Grass(x, y, this.dimension);
             this.mapObjects.push(this.start);
             break;
@@ -74,7 +74,7 @@ class LevelMap {
     }
     return 'none';
   }
-  
+
   getGroundDimension() {
     return this.dimension;
   }

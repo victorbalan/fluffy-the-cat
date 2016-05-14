@@ -2,23 +2,31 @@ const KEYCODE_LEFT = 37;
 const KEYCODE_RIGHT = 39;
 const KEYCODE_UP = 38;
 const KEYCODE_DOWN = 40;
+const KEYCODE_G = 71;
 const SPEED = 10;
 
-class Level {
-  constructor(canvas, level, dimension) {
+class Game {
+  constructor(canvas, dimension) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.godmode = false;
-    this.map = new LevelMap(level, dimension);
-    this.mapLength = level.length;
+    this.mapLength = 10;
     this.dimension = dimension;
+    this.stage = new createjs.Stage(this.canvas);
+  }
+  startLevel(level) {
+    console.log('starting')
+    this.stage.removeAllChildren();
+    this.stage.update();
+    this.map = new LevelMap(level, this.dimension);
+    this.mapLength = level.length;
+    this.start();
   }
 
   start() {
-    this.stage = new createjs.Stage(this.canvas);
     this.map.addToStage(this.stage);
 
-    this.player = new Player(this.map.getStartPos().object.x, this.map.getStartPos().object.y, this.map.getStartPos().dimension/2);
+    this.player = new Player(this.map.getStartPos().object.x, this.map.getStartPos().object.y, this.map.getStartPos().dimension);
     this.player.addToStage(this.stage);
 
     this.overlay = new Overlay(this.stage, this.mapLength, this.map.getGroundDimension());
@@ -26,6 +34,11 @@ class Level {
 
     this.registerEvents();
     console.log(this.player)
+    this.stage.update();
+  }
+
+  clear(){
+    this.stage.clear();
     this.stage.update();
   }
 
@@ -43,7 +56,6 @@ class Level {
   }
 
   keyPressed(event) {
-    var bounds = this.player.getBounds();
     var x =0, y = 0;
     switch (event.keyCode) {
       case KEYCODE_LEFT:
@@ -58,14 +70,20 @@ class Level {
       case KEYCODE_DOWN:
         y = -SPEED;
         break;
+      case KEYCODE_G:
+        this.godMode();
+        return;
+      default:
+        return;
     }
+    var bounds = this.player.getBounds();
     bounds.x = bounds.x - x;
     bounds.y = bounds.y - y;
     switch(this.map.getIntersectionType(bounds)){
       case 'collision':
         return;
       case 'finish':
-        alert('ggwp');
+        console.log('ggwp');
         break;
     }
     this.map.move(x, y);
