@@ -1,12 +1,9 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 
-<link rel="import" href="levels-provider.html">
-<link rel="import" href="level-by-id-provider.html">
-<link rel="import" href="next-level-provider.html">
+<link rel="import" href="providers/levels-by-category-provider.html">
+<link rel="import" href="providers/level-by-id-provider.html">
+<link rel="import" href="providers/categories-provider.html">
 
 <dom-module id="game-page">
   <template>
@@ -19,23 +16,20 @@
         @apply(--layout-horizontal);
       }
     </style>
-    <levels-provider data="{{levels}}"></levels-provider>
-    <level-by-id-provider id="[[selectedLevel.value]]" data="{{level}}"></level-by-id-provider>
-    <next-level-provider difficulty="[[dif]]" sub-difficulty="[[subDif]]" data="{{level}}"></next-level-provider>
+    <categories-provider data="{{categories}}"></categories-provider>
+    <levels-by-category-provider category="[[categoryId]]" data="{{levels}}"></levels-by-category-provider>
+    <level-by-id-provider id="[[levelId]]" data="{{level}}"></level-by-id-provider>
 
     <canvas id="demoCanvas" width="[[dimension]]" height="[[dimension]]" style="border: 1px solid black;"></canvas>
-    <paper-dropdown-menu selected-item="{{selectedLevel}}" style="position: fixed; top:0; right:0;">
-      <paper-menu id="levelsMenu" class="dropdown-content">
-        <template is="dom-repeat" items="{{levels}}">
-          <option value="{{item._id}}" style="width: 200px;">{{_getLabel(item)}}</option>
-        </template>
-      </paper-menu>
-    </paper-dropdown-menu>
+    <button>Click if controls don`t work</button>
   </template>
   <script src="levelmap.js"></script>
   <script src="level.js"></script>
   <script src="overlay.js"></script>
-  <script src="intersections.js"></script>
+  <script src="menu/baseMenu.js"></script>
+  <script src="menu/menu.js"></script>
+  <script src="menu/levelSelection.js"></script>
+  <script src="menu/categorySelection.js"></script>
   <script src="model/gameobject.js"></script>
   <script src="model/finish.js"></script>
   <script src="model/grass.js"></script>
@@ -48,36 +42,101 @@
 
       Polymer({
         is: 'game-page',
+        properties: {
+          currentMenu: {
+            value: 'play'
+          }
+        },
         observers: [
           '_levelChanged(level)',
-          '_levelsChanged(levels)'
+          '_levelsChanged(levels)',
+          '_categoriesChanged(categories)'
         ],
+        ready: function () {
+          this.dimension = 600;//window.innerHeight < window.innerWidth ? window.innerHeight -50 : window.innerWidth - 50;
+          var element = this;
+          window.addEventListener('keydown', function (e) {
+            if (e.keyCode !== 8) {
+              return;
+            }
+            e.preventDefault();
+            element.goBack();
+          });
+        },
         _getLabel: function (item) {
           return 'd: ' + item.difficulty + ' sd: ' + item.subDifficulty;
         },
         _levelChanged: function (level) {
+          if (!level) {
+            return;
+          }
           this.newgame(JSON.parse(level.map));
         },
         _levelsChanged: function (levels) {
           if (!levels || levels.length === 0) {
             return;
           }
-          this.$.levelsMenu.selected = 0;
+          this.showLevelSelection();
         },
-        ready: function () {
-          this.dimension = 600;//window.innerHeight < window.innerWidth ? window.innerHeight -50 : window.innerWidth - 50;
+        _categoriesChanged: function (categories) {
+          if (!categories || categories.length === 0) {
+            return;
+          }
+          this.stage = new createjs.Stage(this.$.demoCanvas);
+          this.showPlayMenu();
+        },
+        showPlayMenu: function () {
+          this.clearStage();
+          var element = this;
+          new Menu(this.stage, this.dimension, function () {
+            element.showCategorySelection();
+          });
+        },
+        showCategorySelection: function () {
+          this.currentMenu = 'categorySelection';
+          this.clearStage();
+          var element = this;
+          new CategorySelection(this.stage, this.dimension, this.categories, function (categoryId) {
+            element.clearStage();
+            element.categoryId = categoryId;
+          });
+        },
+        showLevelSelection: function () {
+          this.currentMenu = 'levelSelection';
+          this.clearStage();
+          var element = this;
+          new LevelSelection(this.stage, this.dimension, this.levels, function (levelId) {
+            element.levelId = levelId;
+          });
+        },
+        goBack: function(){
+          switch(this.currentMenu){
+            case 'play':
+              return;
+            case 'game':
+              this.showLevelSelection();
+              return;
+            case 'levelSelection':
+              this.showCategorySelection();
+              return;
+            case 'categorySelection':
+              this.showPlayMenu();
+              return;
+          }
         },
         newgame: function (level) {
           if (!this.game) {
             var element = this;
-            this.game = new Game(this.$.demoCanvas, this.dimension, function () {
-//              NOTE - this enables next level
-//              element.dif = element.level.difficulty;
-//              element.subDif = element.level.subDifficulty;
-              element.$.levelsMenu.selected = element.$.levelsMenu.selected + 1;
+            this.game = new Game(this.stage, this.dimension, function () {
+              element.showLevelSelection();
             });
           }
+          this.currentMenu = 'game';
           this.game.startLevel(level);
+        },
+        clearStage: function () {
+          this.stage.removeAllChildren();
+          this.stage.update();
         }
       });
     })();

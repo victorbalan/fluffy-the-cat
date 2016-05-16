@@ -1,6 +1,6 @@
-<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 
-<dom-module id="next-level-provider">
+<dom-module id="level-by-id-provider">
   <style>
     :host {
       display: none;
@@ -10,22 +10,22 @@
     <iron-ajax
       id="request"
       method="GET"
-      url="[[baseUrl]]/level/next?difficulty=[[difficulty]]&&subDifficulty=[[subDifficulty]]"
+      url="[[baseUrl]]/levels/[[id]]"
       handle-as="json"
       last-response="{{data}}">
     </iron-ajax>
   </template>
-  <script type="application/javascript" src="../../scripts/behaviors/general-provider-behavior.js"></script>
+  <script type="application/javascript" src="../../../scripts/behaviors/general-provider-behavior.js"></script>
   <script>
     Polymer({
-      is: 'next-level-provider',
+      is: 'level-by-id-provider',
       behaviors: [
         Behaviors.Providers.General
       ],
       observers: [
-        '_queryChanged(difficulty, subDifficulty)'
+        '_idChanged(id)'
       ],
-      _queryChanged: function(){
+      _idChanged: function(){
         this.refresh();
       },
       refresh: function () {
