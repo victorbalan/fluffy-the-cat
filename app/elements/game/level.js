@@ -6,13 +6,15 @@ const KEYCODE_G = 71;
 const SPEED = 10;
 
 class Game {
-  constructor(canvas, dimension) {
+  constructor(canvas, dimension, onFinishCallback) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.godmode = false;
     this.mapLength = 10;
     this.dimension = dimension;
     this.stage = new createjs.Stage(this.canvas);
+    // TODO - fire event
+    this.onFinish = onFinishCallback;
   }
   startLevel(level) {
     console.log('starting')
@@ -76,6 +78,7 @@ class Game {
       default:
         return;
     }
+    event.preventDefault();
     var bounds = this.player.getBounds();
     bounds.x = bounds.x - x;
     bounds.y = bounds.y - y;
@@ -83,6 +86,7 @@ class Game {
       case 'collision':
         return;
       case 'finish':
+        this.onFinish();
         console.log('ggwp');
         break;
     }

@@ -6,6 +6,7 @@
 
 <link rel="import" href="levels-provider.html">
 <link rel="import" href="level-by-id-provider.html">
+<link rel="import" href="next-level-provider.html">
 
 <dom-module id="game-page">
   <template>
@@ -18,13 +19,14 @@
         @apply(--layout-horizontal);
       }
     </style>
-    <levels-provider data="{{data}}"></levels-provider>
+    <levels-provider data="{{levels}}"></levels-provider>
     <level-by-id-provider id="[[selectedLevel.value]]" data="{{level}}"></level-by-id-provider>
+    <next-level-provider difficulty="[[dif]]" sub-difficulty="[[subDif]]" data="{{level}}"></next-level-provider>
 
     <canvas id="demoCanvas" width="[[dimension]]" height="[[dimension]]" style="border: 1px solid black;"></canvas>
     <paper-dropdown-menu selected-item="{{selectedLevel}}" style="position: fixed; top:0; right:0;">
-      <paper-menu id="loginAsMenu" class="dropdown-content">
-        <template is="dom-repeat" items="{{data}}">
+      <paper-menu id="levelsMenu" class="dropdown-content">
+        <template is="dom-repeat" items="{{levels}}">
           <option value="{{item._id}}" style="width: 200px;">{{_getLabel(item)}}</option>
         </template>
       </paper-menu>
@@ -47,7 +49,8 @@
       Polymer({
         is: 'game-page',
         observers: [
-          '_levelChanged(level)'
+          '_levelChanged(level)',
+          '_levelsChanged(levels)'
         ],
         _getLabel: function (item) {
           return 'd: ' + item.difficulty + ' sd: ' + item.subDifficulty;
@@ -55,12 +58,24 @@
         _levelChanged: function (level) {
           this.newgame(JSON.parse(level.map));
         },
+        _levelsChanged: function (levels) {
+          if (!levels || levels.length === 0) {
+            return;
+          }
+          this.$.levelsMenu.selected = 0;
+        },
         ready: function () {
           this.dimension = 600;//window.innerHeight < window.innerWidth ? window.innerHeight -50 : window.innerWidth - 50;
         },
         newgame: function (level) {
-          if(!this.game){
-            this.game = new Game(this.$.demoCanvas, this.dimension);
+          if (!this.game) {
+            var element = this;
+            this.game = new Game(this.$.demoCanvas, this.dimension, function () {
+//              NOTE - this enables next level
+//              element.dif = element.level.difficulty;
+//              element.subDif = element.level.subDifficulty;
+              element.$.levelsMenu.selected = element.$.levelsMenu.selected + 1;
+            });
           }
           this.game.startLevel(level);
         }
