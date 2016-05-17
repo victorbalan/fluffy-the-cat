@@ -1,6 +1,5 @@
-
 class LevelMap {
-  constructor(level, canvasDimension){
+  constructor(level, canvasDimension) {
     this.canvasDimension = canvasDimension;
     this.dimension = canvasDimension / 10;
     this.mapObjects = [];
@@ -14,7 +13,7 @@ class LevelMap {
     var startj = 0;
     for (var i = 0; i < level.length; i++) {
       for (var j = 0; j < level[i].length; j++) {
-        if(level[i][j]===-1){
+        if (level[i][j] === -1) {
           starti = i;
           startj = j;
         }
@@ -22,9 +21,9 @@ class LevelMap {
     }
     for (var i = 0; i < level.length; i++) {
       for (var j = 0; j < level[i].length; j++) {
-        var x = (j - startj -1) * this.dimension + this.canvasDimension/2;
-        var y = (i - starti -1) * this.dimension + this.canvasDimension/2;
-        switch(level[i][j]){
+        var x = (j - startj - 1) * this.dimension + this.canvasDimension / 2;
+        var y = (i - starti - 1) * this.dimension + this.canvasDimension / 2;
+        switch (level[i][j]) {
           case 0:
             var grass = new Grass(x, y, this.dimension);
             this.mapObjects.push(grass);
@@ -46,29 +45,29 @@ class LevelMap {
     }
   }
 
-  move(xOfset , yOffset){
+  move(xOfset, yOffset) {
     this.mapObjects.forEach(function (object) {
-      object.moveTo(object.object.x + xOfset , object.object.y + yOffset);
+      object.moveTo(object.object.x + xOfset, object.object.y + yOffset);
     });
   }
 
-  addToStage(stage){
+  addToStage(stage) {
     this.mapObjects.forEach(function (object) {
       object.addToStage(stage);
     });
   }
 
-  getIntersectionType(player){
+  getIntersectionType(player) {
     var topLeft = this.mapObjects[0].getBounds();
     var botRight = this.mapObjects[this.mapObjects.length - 1].getBounds();
-    if(player.x < topLeft.x || player.x > botRight.x + player.width||
-      player.y <  topLeft.y || player.y > botRight.y + player.height){
+    if (player.x < topLeft.x || player.x > botRight.x + player.width ||
+      player.y < topLeft.y || player.y > botRight.y + player.height) {
       // out of bounds
       return 'collision'
     }
     for (var i = 0; i < this.mapObjects.length; i++) {
       var type = this.mapObjects[i].getIntersectionType(player)
-      if(type !== 'none'){
+      if (type !== 'none') {
         return type;
       }
     }
@@ -77,6 +76,10 @@ class LevelMap {
 
   getGroundDimension() {
     return this.dimension;
+  }
+
+  getFinishPos() {
+    return this.finish;
   }
 
   getStartPos() {

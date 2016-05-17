@@ -22,6 +22,9 @@
 
     <canvas id="demoCanvas" width="[[dimension]]" height="[[dimension]]" style="border: 1px solid black;"></canvas>
     <button>Click if controls don`t work</button>
+    <paper-button style$="{{distanceGradient}}">
+      <b> ............................................................................... </b>
+    </paper-button>
   </template>
   <script src="levelmap.js"></script>
   <script src="level.js"></script>
@@ -45,6 +48,9 @@
         properties: {
           currentMenu: {
             value: 'play'
+          },
+          distanceGradient: {
+            value: 'background-color:rgba(64,58,62,1)'
           }
         },
         observers: [
@@ -127,9 +133,12 @@
         newgame: function (level) {
           if (!this.game) {
             var element = this;
+            var onMoveCallback = function (distanceGradient) {
+              element.distanceGradient = distanceGradient;
+            };
             this.game = new Game(this.stage, this.dimension, function () {
               element.showLevelSelection();
-            });
+            }, onMoveCallback);
           }
           this.currentMenu = 'game';
           this.game.startLevel(level);
