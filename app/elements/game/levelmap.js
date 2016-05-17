@@ -1,7 +1,8 @@
 class LevelMap {
-  constructor(level, canvasDimension) {
-    this.canvasDimension = canvasDimension;
-    this.dimension = canvasDimension / 10;
+  constructor(level,canvasWidth, canvasHeight) {
+    this.canvasHeight = canvasHeight;
+    this.canvasWidth = canvasWidth;
+    this.dimension = canvasHeight / 10;
     this.mapObjects = [];
 
 
@@ -21,8 +22,8 @@ class LevelMap {
     }
     for (var i = 0; i < level.length; i++) {
       for (var j = 0; j < level[i].length; j++) {
-        var x = (j - startj - 1) * this.dimension + this.canvasDimension / 2;
-        var y = (i - starti - 1) * this.dimension + this.canvasDimension / 2;
+        var x = (j - startj - 1) * this.dimension + this.canvasWidth / 2;
+        var y = (i - starti - 1) * this.dimension + this.canvasHeight / 2;
         switch (level[i][j]) {
           case 0:
             var grass = new Grass(x, y, this.dimension);

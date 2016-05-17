@@ -1,13 +1,13 @@
 class BaseMenu {
-  constructor(stage, dimension, title) {
+  constructor(stage, width, height, title) {
     stage.enableMouseOver(10);
-    stage.addChild(this._text(title, "bold 30px Georgia", dimension / 2 - 10, 20, {color: 'red', textAlign: 'center'}));
+    stage.addChild(this._text(title, "bold 30px Georgia", width / 2 - 10, 20, {color: 'red', textAlign: 'center'}));
 
     this.elementWidth = 100;
     this.topOffset = 90;
     this.elementDimension = 100;
-    this.maxElements = dimension / this.elementWidth - 1;
-    this.elementXOffset = (dimension - this.maxElements * this.elementDimension) / 2;
+    this.maxElements = height / this.elementWidth - 1;
+    this.elementXOffset = (width - this.maxElements * this.elementDimension) / 2;
   }
 
   _text(text, font, x, y, options) {

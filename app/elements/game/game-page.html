@@ -20,7 +20,7 @@
     <levels-by-category-provider category="[[categoryId]]" data="{{levels}}"></levels-by-category-provider>
     <level-by-id-provider id="[[levelId]]" data="{{level}}"></level-by-id-provider>
 
-    <canvas id="demoCanvas" width="[[dimension]]" height="[[dimension]]" style="border: 1px solid black;"></canvas>
+    <canvas id="demoCanvas" width="[[width]]" height="[[height]]" style="border: 1px solid black;"></canvas>
     <button>Click if controls don`t work</button>
     <paper-button style$="{{distanceGradient}}">
       <b> ............................................................................... </b>
@@ -59,7 +59,8 @@
           '_categoriesChanged(categories)'
         ],
         ready: function () {
-          this.dimension = 600;//window.innerHeight < window.innerWidth ? window.innerHeight -50 : window.innerWidth - 50;
+          this.height = Math.floor((window.innerHeight < window.innerWidth ? window.innerHeight -50 : window.innerWidth - 50)/100)*100;
+          this.width = Math.floor(window.innerWidth/100) * 100;
           var element = this;
           window.addEventListener('keydown', function (e) {
             if (e.keyCode !== 8) {
@@ -94,7 +95,7 @@
         showPlayMenu: function () {
           this.clearStage();
           var element = this;
-          new Menu(this.stage, this.dimension, function () {
+          new Menu(this.stage, this.width, this.height, function () {
             element.showCategorySelection();
           });
         },
@@ -102,7 +103,7 @@
           this.currentMenu = 'categorySelection';
           this.clearStage();
           var element = this;
-          new CategorySelection(this.stage, this.dimension, this.categories, function (categoryId) {
+          new CategorySelection(this.stage, this.width, this.height, this.categories, function (categoryId) {
             element.clearStage();
             element.categoryId = categoryId;
           });
@@ -111,7 +112,7 @@
           this.currentMenu = 'levelSelection';
           this.clearStage();
           var element = this;
-          new LevelSelection(this.stage, this.dimension, this.levels, function (levelId) {
+          new LevelSelection(this.stage, this.width, this.height, this.levels, function (levelId) {
             element.levelId = levelId;
           });
         },
@@ -136,7 +137,7 @@
             var onMoveCallback = function (distanceGradient) {
               element.distanceGradient = distanceGradient;
             };
-            this.game = new Game(this.stage, this.dimension, function () {
+            this.game = new Game(this.stage, this.width, this.height, function () {
               element.showLevelSelection();
             }, onMoveCallback);
           }
