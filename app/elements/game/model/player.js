@@ -1,7 +1,7 @@
 class Player extends GameObject {
   constructor(x, y, dimension) {
-    super(x, y, 'DeepSkyBlue', dimension)
-    this.setBounds({x: x, y: y, width: dimension, height: dimension});
+    super(x, y, 'DeepSkyBlue', dimension/2)
+    this.setBounds({x: x, y: y, width: dimension/2, height: dimension/2});
   }
 
   getBounds() {
