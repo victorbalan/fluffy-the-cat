@@ -1,0 +1,36 @@
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="next-level-provider">
+  <style>
+    :host {
+      display: none;
+    }
+  </style>
+  <template>
+    <iron-ajax
+      id="request"
+      method="GET"
+      url="[[baseUrl]]/level/next?difficulty=[[difficulty]]&&subDifficulty=[[subDifficulty]]"
+      handle-as="json"
+      last-response="{{data}}">
+    </iron-ajax>
+  </template>
+  <script type="application/javascript" src="../../../scripts/behaviors/general-provider-behavior.js"></script>
+  <script>
+    Polymer({
+      is: 'next-level-provider',
+      behaviors: [
+        Behaviors.Providers.General
+      ],
+      observers: [
+        '_queryChanged(difficulty, subDifficulty)'
+      ],
+      _queryChanged: function(){
+        this.refresh();
+      },
+      refresh: function () {
+        this.$.request.generateRequest();
+      }
+    });
+  </script>
+</dom-module>

@@ -21,6 +21,10 @@ class GameObject {
     this.object.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
   }
 
+  addEventListener(event, listener){
+    this.object.addEventListener(event, listener);
+  }
+
   _square(x, y, color, dimension) {
     var square = new createjs.Shape();
     square.graphics.beginFill(color).drawRect(0, 0, dimension, dimension);
