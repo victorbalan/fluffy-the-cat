@@ -1,4 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <link rel="import" href="providers/levels-by-category-provider.html">
@@ -15,6 +16,7 @@
       #wrapper {
         @apply(--layout-horizontal);
       }
+
     </style>
     <categories-provider data="{{categories}}"></categories-provider>
     <levels-by-category-provider category="[[categoryId]]" data="{{levels}}"></levels-by-category-provider>
@@ -25,6 +27,7 @@
     <paper-button style$="{{distanceGradient}}">
       <b> ............................................................................... </b>
     </paper-button>
+    <paper-progress value="60" class="green" style="width: 100%;"></paper-progress>
   </template>
   <script src="levelmap.js"></script>
   <script src="level.js"></script>
