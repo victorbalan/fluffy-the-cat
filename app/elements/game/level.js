@@ -16,11 +16,12 @@ const endColor = {
 
 class Game {
   constructor(stage, width, height, onFinishCallback, onMoveCallback) {
-    this.speed = height / 100;
+    // NOTE 2.5% would fit perfectly but the map would flicker.
+    // TODO - solve
+    this.speed = 2 * height / 100;
     this.stage = stage;
     this.godmode = false;
     this.godmode = false;
-    this.mapLength = 10;
     this.height = height;
     this.width = width;
     // TODO - fire event
@@ -54,6 +55,7 @@ class Game {
     this.stage.clear();
     this.stage.update();
   }
+
   registerEvents() {
     (() => {
       document.addEventListener('keydown', (event) => {
@@ -140,12 +142,13 @@ class Game {
   godMode() {
     // TODO - make godmode show exactly a radius of x squares and not the whole map.
     this.godmode = !this.godmode;
-    if(this.godmode){
+    if (this.godmode) {
       this.overlay.hide();
-    }else{
+    } else {
       this.overlay.show();
     }
   }
+
   // TODO
   // addMobileControls(){
   //   var groundDimension = this.map.getGroundDimension();
