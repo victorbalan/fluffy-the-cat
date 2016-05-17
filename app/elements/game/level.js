@@ -3,7 +3,6 @@ const KEYCODE_RIGHT = 39;
 const KEYCODE_UP = 38;
 const KEYCODE_DOWN = 40;
 const KEYCODE_G = 71;
-const SPEED = 10;
 const startColor = {
   r: 64,
   g: 58,
@@ -16,12 +15,14 @@ const endColor = {
 };
 
 class Game {
-  constructor(stage, dimension, onFinishCallback, onMoveCallback) {
+  constructor(stage, width, height, onFinishCallback, onMoveCallback) {
+    this.speed = height / 100;
     this.stage = stage;
     this.godmode = false;
     this.godmode = false;
     this.mapLength = 10;
-    this.dimension = dimension;
+    this.height = height;
+    this.width = width;
     // TODO - fire event
     this.onFinish = onFinishCallback;
     this.onMove = onMoveCallback;
@@ -32,7 +33,7 @@ class Game {
     console.log('starting')
     this.stage.removeAllChildren();
     this.stage.update();
-    this.map = new LevelMap(level, this.dimension);
+    this.map = new LevelMap(level, this.width, this.height);
     this.mapLength = level.length;
     this.start();
   }
@@ -43,7 +44,7 @@ class Game {
     this.player = new Player(this.map.getStartPos().object.x, this.map.getStartPos().object.y, this.map.getStartPos().dimension);
     this.player.addToStage(this.stage);
 
-    this.overlay = new Overlay(this.stage, this.dimension, this.player);
+    this.overlay = new Overlay(this.stage, this.width, this.height, this.player);
 
     this.stage.update();
     this.initialFinishDistance = this.getDistanceToFinish();
@@ -53,42 +54,6 @@ class Game {
     this.stage.clear();
     this.stage.update();
   }
-  // TODO
-  addMobileControls(){
-    var groundDimension = this.map.getGroundDimension();
-    var self = this;
-    if(this.dimension < 600) {
-      createjs.Touch.enable(this.stage);
-      var right = new GameObject(this.dimension - groundDimension, this.dimension - (groundDimension * 2), 'blue', groundDimension);
-      right.addToStage(this.stage);
-      right.addEventListener('click', function () {
-        console.log('right');
-        self.keyCodePressed(KEYCODE_RIGHT);
-      });
-
-      var left = new GameObject(this.dimension - (groundDimension * 2 + 5), this.dimension - (groundDimension * 2), 'blue', groundDimension);
-      left.addToStage(this.stage);
-      left.addEventListener('click', function () {
-        console.log('left');
-        self.keyCodePressed(KEYCODE_LEFT);
-      });
-
-      var up = new GameObject(this.dimension - (groundDimension * 2 - groundDimension / 2), this.dimension - (groundDimension * 3 + 5), 'blue', groundDimension);
-      up.addToStage(this.stage);
-      up.addEventListener('click', function () {
-        console.log('up');
-        self.keyCodePressed(KEYCODE_UP);
-      });
-      var down = new GameObject(this.dimension - (groundDimension * 2 - groundDimension / 2), this.dimension - (groundDimension - 5), 'blue', groundDimension);
-      down.addToStage(this.stage);
-      down.addEventListener('click', function () {
-        console.log('down');
-        self.keyCodePressed(KEYCODE_DOWN);
-      });
-      this.stage.update();
-    }
-  }
-
   registerEvents() {
     (() => {
       document.addEventListener('keydown', (event) => {
@@ -101,16 +66,16 @@ class Game {
     var x = 0, y = 0;
     switch (event.keyCode) {
       case KEYCODE_LEFT:
-        x = SPEED;
+        x = this.speed;
         break;
       case KEYCODE_RIGHT:
-        x = -SPEED;
+        x = -this.speed;
         break;
       case KEYCODE_UP:
-        y = SPEED;
+        y = this.speed;
         break;
       case KEYCODE_DOWN:
-        y = -SPEED;
+        y = -this.speed;
         break;
       case KEYCODE_G:
         this.godMode();
@@ -176,4 +141,40 @@ class Game {
     this.godmode = !this.godmode;
     this.overlay.update(this.player, this.godmode)
   }
+  // TODO
+  // addMobileControls(){
+  //   var groundDimension = this.map.getGroundDimension();
+  //   var self = this;
+  //   if(this.height < 600) {
+  //     createjs.Touch.enable(this.stage);
+  //     var right = new GameObject(this.height - groundDimension, this.height - (groundDimension * 2), 'blue', groundDimension);
+  //     right.addToStage(this.stage);
+  //     right.addEventListener('click', function () {
+  //       console.log('right');
+  //       self.keyCodePressed(KEYCODE_RIGHT);
+  //     });
+  //
+  //     var left = new GameObject(this.height - (groundDimension * 2 + 5), this.height - (groundDimension * 2), 'blue', groundDimension);
+  //     left.addToStage(this.stage);
+  //     left.addEventListener('click', function () {
+  //       console.log('left');
+  //       self.keyCodePressed(KEYCODE_LEFT);
+  //     });
+  //
+  //     var up = new GameObject(this.height - (groundDimension * 2 - groundDimension / 2), this.height - (groundDimension * 3 + 5), 'blue', groundDimension);
+  //     up.addToStage(this.stage);
+  //     up.addEventListener('click', function () {
+  //       console.log('up');
+  //       self.keyCodePressed(KEYCODE_UP);
+  //     });
+  //     var down = new GameObject(this.height - (groundDimension * 2 - groundDimension / 2), this.height - (groundDimension - 5), 'blue', groundDimension);
+  //     down.addToStage(this.stage);
+  //     down.addEventListener('click', function () {
+  //       console.log('down');
+  //       self.keyCodePressed(KEYCODE_DOWN);
+  //     });
+  //     this.stage.update();
+  //   }
+  // }
+
 }
