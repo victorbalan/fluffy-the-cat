@@ -4,9 +4,19 @@ const KEYCODE_UP = 38;
 const KEYCODE_DOWN = 40;
 const KEYCODE_G = 71;
 const SPEED = 10;
+const startColor = {
+  r: 64,
+  g: 58,
+  b: 62
+};
+const endColor = {
+  r: 255,
+  g: 130,
+  b: 155
+};
 
 class Game {
-  constructor(stage, dimension, onFinishCallback) {
+  constructor(stage, dimension, onFinishCallback, onMoveCallback) {
     this.stage = stage;
     this.godmode = false;
     this.godmode = false;
@@ -14,8 +24,10 @@ class Game {
     this.dimension = dimension;
     // TODO - fire event
     this.onFinish = onFinishCallback;
+    this.onMove = onMoveCallback;
     this.registerEvents();
   }
+
   startLevel(level) {
     console.log('starting')
     this.stage.removeAllChildren();
@@ -34,8 +46,8 @@ class Game {
     this.overlay = new Overlay(this.stage, this.mapLength, this.map.getGroundDimension());
     this.overlay.update(this.player);
 
-    console.log(this.player)
     this.stage.update();
+    this.initialFinishDistance = this.getDistanceToFinish();
   }
 
   clear() {
@@ -87,7 +99,7 @@ class Game {
   }
 
   keyPressed(event) {
-    var x =0, y = 0;
+    var x = 0, y = 0;
     switch (event.keyCode) {
       case KEYCODE_LEFT:
         x = SPEED;
@@ -111,7 +123,7 @@ class Game {
     var bounds = this.player.getBounds();
     bounds.x = bounds.x - x;
     bounds.y = bounds.y - y;
-    switch(this.map.getIntersectionType(bounds)){
+    switch (this.map.getIntersectionType(bounds)) {
       case 'collision':
         return;
       case 'finish':
@@ -121,11 +133,48 @@ class Game {
     }
     this.map.move(x, y);
     this.stage.update();
+    this.computeNewDistanceToFinish();
+  }
+
+  computeNewDistanceToFinish() {
+    var distance = this.getDistanceToFinish();
+    var normalizedDistance = this.normalizeDistance(distance);
+    this.onMove(this.computeDistanceGradient(normalizedDistance));
+  }
+
+  computeDistanceGradient(distance) {
+    var percentFade = Math.round(100 - (distance * 100) / 255) / 100;
+    console.log(percentFade);
+    var diffRed = endColor.r - startColor.r;
+    var diffGreen = endColor.g - startColor.g;
+    var diffBlue = endColor.b - startColor.b;
+
+    diffRed = Math.round(Math.abs((diffRed * percentFade) + startColor.r));
+    diffGreen = Math.round(Math.abs((diffGreen * percentFade) + startColor.g));
+    diffBlue = Math.round(Math.abs((diffBlue * percentFade) + startColor.b));
+
+    var style = `background-color:rgba(${diffRed},${diffGreen},${diffBlue},1)`;
+    return style;
+  }
+
+  normalizeDistance(distance) {
+    return (distance * 255) / this.initialFinishDistance;
+  }
+
+  getDistanceToFinish() {
+    var finish = this.map.getFinishPos().getBounds();
+    var playerBounds = this.player.getBounds();
+
+    var finishX = finish.x, finishY = finish.y;
+    var playerX = playerBounds.x, playerY = playerBounds.y;
+
+    var difX = (finishX - playerX);
+    var difY = (finishY - playerY);
+    return Math.sqrt(difX * difX + difY * difY);
   }
 
   godMode() {
     this.godmode = !this.godmode;
-    console.log(this.godmode);
     this.overlay.update(this.player, this.godmode)
   }
 }

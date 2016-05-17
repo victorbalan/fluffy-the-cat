@@ -30,11 +30,12 @@ function Overlay(stage, n, squareLength) {
         } else {
           if (i === ci && j === cj) {
             overlay[i][j].alpha = 0;
-          } else if ((Math.abs(ci-i) + Math.abs(cj - j))===1) {
+          } else if ((Math.abs(ci - i) + Math.abs(cj - j)) === 1) {
             overlay[i][j].alpha = 0.5;
           } else {
             overlay[i][j].alpha = 1;
-          } if ((Math.abs(ci-i) + Math.abs(cj - j))===2){
+          }
+          if ((Math.abs(ci - i) + Math.abs(cj - j)) === 2) {
             overlay[i][j].alpha = 0.75;
           }
         }
