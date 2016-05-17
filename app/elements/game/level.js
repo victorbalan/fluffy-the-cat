@@ -138,8 +138,13 @@ class Game {
   }
 
   godMode() {
+    // TODO - make godmode show exactly a radius of x squares and not the whole map.
     this.godmode = !this.godmode;
-    this.overlay.update(this.player, this.godmode)
+    if(this.godmode){
+      this.overlay.hide();
+    }else{
+      this.overlay.show();
+    }
   }
   // TODO
   // addMobileControls(){

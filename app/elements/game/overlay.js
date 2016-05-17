@@ -11,4 +11,19 @@ function Overlay(stage, width, height, player) {
   shape.graphics.beginRadialGradientFill(["transparent","#000"], [0, 1], bounds.x, bounds.y, 1, bounds.x, bounds.y, height/3)
     .arc(bounds.x, bounds.y, height/2, 0, Math.PI * 2, true).closePath();
   stage.update();
+
+  function show(){
+    shape.visible = true;
+    stage.update();
+  }
+
+  function hide(){
+    shape.visible = false;
+    stage.update();
+  }
+
+  return {
+    show: show,
+    hide: hide
+  }
 }
