@@ -15,7 +15,7 @@ const endColor = {
 };
 
 class Game {
-  constructor(stage, width, height, onFinishCallback, onMoveCallback) {
+  constructor(stage, width, height, onFinishCallback) {
     // NOTE 2.5% would fit perfectly but the map would flicker.
     // TODO - solve
     this.speed = 2 * height / 100;
@@ -26,17 +26,16 @@ class Game {
     this.width = width;
     // TODO - fire event
     this.onFinish = onFinishCallback;
-    this.onMove = onMoveCallback;
     this.registerEvents();
   }
 
   startLevel(level) {
-    console.log('starting')
     this.stage.removeAllChildren();
     this.stage.update();
     this.map = new LevelMap(level, this.width, this.height);
     this.mapLength = level.length;
     this.start();
+    this.loader = new createjs.Shape();
   }
 
   start() {
@@ -99,18 +98,27 @@ class Game {
     }
     this.map.move(x, y);
     this.stage.update();
-    this.computeNewDistanceToFinish();
+    this.handleProgress(this.normalizeDistance(this.getDistanceToFinish()));
   }
 
-  computeNewDistanceToFinish() {
-    var distance = this.getDistanceToFinish();
-    var normalizedDistance = this.normalizeDistance(distance);
-    this.onMove(this.computeDistanceGradient(normalizedDistance));
-  }
-
-  computeDistanceGradient(distance) {
+  handleProgress(distance) {
     var percentFade = Math.round(100 - (distance * 100) / 255) / 100;
-    console.log(percentFade);
+    if (percentFade < 0)
+      percentFade = 0;
+
+    var style = this.extractColorForProgress(percentFade);
+
+    // TODO: workaround to 'refresh' the progress bar
+    this.loader.graphics.beginFill("#000000").setStrokeStyle(3).beginStroke("rgba(0,0,0, 1)")
+      .drawRect(0, 0, this.width, 30);
+
+    this.loader.x = 50;
+    this.loader.graphics.beginFill(style).setStrokeStyle(3).beginStroke(style)
+      .drawRect(0, 0, (percentFade * 100) * this.width / 100, 30);
+    this.stage.addChild(this.loader);
+  }
+
+  extractColorForProgress(percentFade) {
     var diffRed = endColor.r - startColor.r;
     var diffGreen = endColor.g - startColor.g;
     var diffBlue = endColor.b - startColor.b;
@@ -119,8 +127,7 @@ class Game {
     diffGreen = Math.round(Math.abs((diffGreen * percentFade) + startColor.g));
     diffBlue = Math.round(Math.abs((diffBlue * percentFade) + startColor.b));
 
-    var style = `background-color:rgba(${diffRed},${diffGreen},${diffBlue},1)`;
-    return style;
+    return `rgba(${diffRed},${diffGreen},${diffBlue},1)`;
   }
 
   normalizeDistance(distance) {
