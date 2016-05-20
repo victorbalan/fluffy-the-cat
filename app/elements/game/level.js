@@ -32,9 +32,20 @@ class Game {
   startLevel(level) {
     this.stage.removeAllChildren();
     this.stage.update();
-    this.map = new LevelMap(level, this.width, this.height);
     this.mapLength = level.length;
-    this.start();
+    var manifest = [
+      {src: "/images/ground.png", id: "ground"},
+      {src: "/images/brickwall.png", id: "wall"}
+    ];
+    var self = this;
+    this.assetLoader = new createjs.LoadQueue(false);
+    this.assetLoader.addEventListener("complete", function(){
+      console.log('load complete');
+      console.log(self.assetLoader.getResult('grass'))
+      self.map = new LevelMap(level, self.width, self.height, self.assetLoader);
+      self.start();
+    });
+    this.assetLoader.loadManifest(manifest, true);
     this.loader = new createjs.Shape();
   }
 
@@ -44,6 +55,7 @@ class Game {
     this.player = new Player(this.map.getStartPos().object.x, this.map.getStartPos().object.y, this.map.getStartPos().dimension);
     this.player.addToStage(this.stage);
 
+    this.stage.update()
     this.overlay = new Overlay(this.stage, this.width, this.height, this.player);
 
     this.stage.update();

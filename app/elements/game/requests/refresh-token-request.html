@@ -1,6 +1,6 @@
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 
-<dom-module id="categories-provider">
+<dom-module id="refresh-token-request">
   <style>
     :host {
       display: none;
@@ -9,21 +9,27 @@
   <template>
     <iron-ajax
       id="request"
-      method="GET"
-      url="[[baseUrl]]/categories"
+      method="PUT"
+      content-type="application/json"
+      url="[[baseUrl]]/token/refresh"
       handle-as="json"
-      last-response="{{data}}">
+      on-response="_onResponse">
     </iron-ajax>
   </template>
   <script type="application/javascript" src="../../../scripts/behaviors/general-provider-behavior.js"></script>
   <script>
     Polymer({
-      is: 'categories-provider',
+      is: 'refresh-token-request',
       behaviors: [
         Behaviors.Providers.General
       ],
-      refresh: function () {
+      refresh: function (token) {
+        console.log(token)
+        this.$.request.body = {'token': token};
         this.$.request.generateRequest();
+      },
+      _onResponse: function(r){
+        this.fire('token', r.detail.token);
       }
     });
   </script>

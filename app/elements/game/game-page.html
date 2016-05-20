@@ -4,6 +4,7 @@
 <link rel="import" href="providers/levels-by-category-provider.html">
 <link rel="import" href="providers/level-by-id-provider.html">
 <link rel="import" href="providers/categories-provider.html">
+<link rel="import" href="services/login-service.html">
 
 <dom-module id="game-page">
   <template>
@@ -19,6 +20,7 @@
     <categories-provider data="{{categories}}"></categories-provider>
     <levels-by-category-provider category="[[categoryId]]" data="{{levels}}"></levels-by-category-provider>
     <level-by-id-provider id="[[levelId]]" data="{{level}}"></level-by-id-provider>
+    <login-service on-logged-in="refresh"></login-service>
 
     <canvas id="demoCanvas" width="[[width]]" height="[[height]]" style="border: 1px solid black;"></canvas>
     <button>Click if controls don`t work</button>
@@ -32,11 +34,13 @@
   <script src="menu/levelSelection.js"></script>
   <script src="menu/categorySelection.js"></script>
   <script src="model/gameobject.js"></script>
+  <script src="model/texturedgameobject.js"></script>
   <script src="model/finish.js"></script>
-  <script src="model/grass.js"></script>
+  <script src="model/ground.js"></script>
   <script src="model/player.js"></script>
   <script src="model/wall.js"></script>
   <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+  <script src="https://code.createjs.com/preloadjs-0.6.2.min.js"></script>
   <script>
     (function () {
       'use strict';
@@ -56,6 +60,9 @@
           '_levelsChanged(levels)',
           '_categoriesChanged(categories)'
         ],
+        refresh: function(){
+          this.$$('categories-provider').refresh();
+        },
         ready: function () {
           this.height = Math.floor((window.innerHeight < window.innerWidth ? window.innerHeight -50 : window.innerWidth - 50)/100)*100;
           this.width = Math.floor(window.innerWidth/100) * 100;

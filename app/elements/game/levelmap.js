@@ -1,9 +1,12 @@
 class LevelMap {
-  constructor(level,canvasWidth, canvasHeight) {
+  constructor(level,canvasWidth, canvasHeight, loader) {
     this.canvasHeight = canvasHeight;
     this.canvasWidth = canvasWidth;
     this.dimension = canvasHeight / 10;
     this.mapObjects = [];
+
+    var groundTexture = loader.getResult('ground');
+    var wallTexture = loader.getResult('wall');
 
 
     if (!level || level.length === 0 || !level[0] || (level.length !== level[0].length)) {
@@ -26,11 +29,11 @@ class LevelMap {
         var y = (i - starti - 1) * this.dimension + this.canvasHeight / 2;
         switch (level[i][j]) {
           case 0:
-            var grass = new Grass(x, y, this.dimension);
+            var grass = new Ground(x, y, groundTexture, this.dimension);
             this.mapObjects.push(grass);
             break;
           case 1:
-            var wall = new Wall(x, y, this.dimension);
+            var wall = new TexturedGameObject(x, y, wallTexture, this.dimension);
             this.mapObjects.push(wall);
             break;
           case 2:
@@ -38,7 +41,7 @@ class LevelMap {
             this.mapObjects.push(this.finish);
             break;
           case -1:
-            this.start = new Grass(x, y, this.dimension);
+            this.start = new Ground(x, y, groundTexture, this.dimension);
             this.mapObjects.push(this.start);
             break;
         }

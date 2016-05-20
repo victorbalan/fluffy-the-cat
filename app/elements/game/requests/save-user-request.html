@@ -1,6 +1,6 @@
 <link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 
-<dom-module id="categories-provider">
+<dom-module id="save-user-request">
   <style>
     :host {
       display: none;
@@ -9,21 +9,26 @@
   <template>
     <iron-ajax
       id="request"
-      method="GET"
-      url="[[baseUrl]]/categories"
+      method="POST"
+      content-type="application/json"
+      url="[[baseUrl]]/users"
       handle-as="json"
-      last-response="{{data}}">
+      on-response="_onResponse">
     </iron-ajax>
   </template>
   <script type="application/javascript" src="../../../scripts/behaviors/general-provider-behavior.js"></script>
   <script>
     Polymer({
-      is: 'categories-provider',
+      is: 'save-user-request',
       behaviors: [
         Behaviors.Providers.General
       ],
-      refresh: function () {
+      save: function (user) {
+        this.$.request.body = user;
         this.$.request.generateRequest();
+      },
+      _onResponse: function(r){
+        this.fire('token', r.detail.token);
       }
     });
   </script>

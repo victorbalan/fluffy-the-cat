@@ -1,0 +1,87 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+
+<link rel="import" href="../requests/save-user-request.html">
+<link rel="import" href="../requests/refresh-token-request.html">
+<dom-module id="login-service">
+  <style>
+    :host {
+      display: none;
+    }
+  </style>
+  <template>
+    <save-user-request on-token="_onToken"></save-user-request>
+    <refresh-token-request on-token="_onToken"></refresh-token-request>
+  </template>
+  <script>
+    Polymer({
+      is: 'login-service',
+      _onToken: function(e, token){
+        console.log(token);
+      },
+      saveUser: function (user) {
+        this.$$('save-user-request').save(user);
+      },
+      refreshToken: function (token) {
+        this.$$('refresh-token-request').refresh(token);
+      },
+      popFacebookLoginDialog: function () {
+        // this opens login if user is not logged in to facebook
+        // or authorize app if user is logged in and app is not authorized
+        var element = this;
+        FB.login(function (response) {
+          if (response.authResponse) {
+            console.log(response.authResponse);
+            FB.api('/me', {fields: ['id', 'first_name', 'last_name', 'email']}, function (response) {
+              element.save({
+                token: response.authResponse.accessToken,
+                facebookId: response.id,
+                firstName: response.first_name,
+                lastName: response.last_name,
+                email: response.email
+              })
+            });
+          } else {
+          }
+        }, {scope: 'public_profile,email,user_friends'});
+      },
+      login: function () {
+        this.fire('logged-in');
+        return;
+        console.log('additional facebook code');
+        var element = this;
+        FB.getLoginStatus(function (response) {
+          if (response.status === 'connected') {
+            element.refreshToken(response.authResponse.accessToken);
+            element.fire('logged-in')
+          } else {
+            element.popFacebookLoginDialog();
+          }
+        });
+      },
+      ready: function () {
+        var element = this;
+        window.fbAsyncInit = function () {
+          FB.init({
+            appId: '298979220434193',
+            xfbml: true,
+            version: 'v2.6'
+          });
+          element.login();
+        };
+
+        (function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) {
+            return;
+          }
+          js = d.createElement(s);
+          js.id = id;
+          js.src = "//connect.facebook.net/en_US/sdk.js";
+          fjs.parentNode.insertBefore(js, fjs);
+          console.log('loaded sdk')
+        }(document, 'script', 'facebook-jssdk'));
+      }
+    });
+  </script>
+</dom-module>
