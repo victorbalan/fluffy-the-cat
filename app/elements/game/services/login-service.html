@@ -18,6 +18,8 @@
       is: 'login-service',
       _onToken: function(e, token){
         console.log(token);
+        localStorage.token = token;
+        this.fire('logged-in')
       },
       saveUser: function (user) {
         this.$$('save-user-request').save(user);
@@ -31,10 +33,10 @@
         var element = this;
         FB.login(function (response) {
           if (response.authResponse) {
-            console.log(response.authResponse);
+            var token = response.authResponse.accessToken;
             FB.api('/me', {fields: ['id', 'first_name', 'last_name', 'email']}, function (response) {
-              element.save({
-                token: response.authResponse.accessToken,
+              element.saveUser({
+                token: token,
                 facebookId: response.id,
                 firstName: response.first_name,
                 lastName: response.last_name,
@@ -46,14 +48,10 @@
         }, {scope: 'public_profile,email,user_friends'});
       },
       login: function () {
-        this.fire('logged-in');
-        return;
-        console.log('additional facebook code');
         var element = this;
         FB.getLoginStatus(function (response) {
           if (response.status === 'connected') {
             element.refreshToken(response.authResponse.accessToken);
-            element.fire('logged-in')
           } else {
             element.popFacebookLoginDialog();
           }

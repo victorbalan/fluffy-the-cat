@@ -9,6 +9,7 @@
   <template>
     <iron-ajax
       id="request"
+      headers="[[headers]]"
       method="GET"
       url="[[baseUrl]]/categories/[[category]]/levels"
       handle-as="json"
@@ -29,6 +30,7 @@
         this.refresh();
       },
       refresh: function(){
+        this.refreshToken();
         this.$.request.generateRequest();
       }
     });

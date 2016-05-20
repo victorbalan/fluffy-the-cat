@@ -28,7 +28,7 @@
         this.$.request.generateRequest();
       },
       _onResponse: function(r){
-        this.fire('token', r.detail.token);
+        this.fire('token', r.detail.response.token);
       }
     });
   </script>

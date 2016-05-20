@@ -22,7 +22,7 @@ class Player extends GameObject {
     animation.x = x;
     animation.y = y;
     animation.gotoAndPlay('up');
-    // TODO - don`t hardcode sca;le
+    
     animation.scaleX = 1.5;
     animation.scaleY = 1.5;
     return animation;

@@ -19,6 +19,10 @@ Behaviors.Providers.General = {
       prefix = 'http://localhost:5000';
     }
 
+    this.headers = {'Authorization': 'Bearer ' + localStorage.token};
     this.baseUrl = prefix;
+  },
+  refreshToken: function(){
+    this.headers = {'Authorization': 'Bearer ' + localStorage.token};
   }
 };
