@@ -80,15 +80,19 @@ class Game {
     switch (event.keyCode) {
       case KEYCODE_LEFT:
         x = this.speed;
+        this.player.goToAndPlay('left');
         break;
       case KEYCODE_RIGHT:
         x = -this.speed;
+        this.player.goToAndPlay('right');
         break;
       case KEYCODE_UP:
         y = this.speed;
+        this.player.goToAndPlay('up');
         break;
       case KEYCODE_DOWN:
         y = -this.speed;
+        this.player.goToAndPlay('down');
         break;
       case KEYCODE_G:
         this.godMode();
