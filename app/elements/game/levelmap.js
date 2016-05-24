@@ -31,9 +31,9 @@ class LevelMap {
     this.mapObjects.push(new TexturedGameObject((- startj - 2) * this.dimension + this.canvasWidth / 2,
       (level.length - starti - 1) * this.dimension + this.canvasHeight / 2, wallTexture, (level.length+2) * this.dimension, this.dimension));
     this.mapObjects.push(new TexturedGameObject((- startj - 2) * this.dimension + this.canvasWidth / 2,
-      (starti - 1) * this.dimension + this.canvasHeight / 2, wallTexture, this.dimension, level.length * this.dimension));
+      (-starti - 1) * this.dimension + this.canvasHeight / 2, wallTexture, this.dimension, level.length * this.dimension));
     this.mapObjects.push(new TexturedGameObject(( level.length - startj -1) * this.dimension + this.canvasWidth / 2,
-      (starti - 1) * this.dimension + this.canvasHeight / 2, wallTexture, this.dimension, level.length * this.dimension));
+      (-starti - 1) * this.dimension + this.canvasHeight / 2, wallTexture, this.dimension, level.length * this.dimension));
 
     // ADD WALLS
     for (var i = 0; i < level.length; i++) {
