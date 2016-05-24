@@ -23,30 +23,58 @@ class LevelMap {
         }
       }
     }
+    this.mapObjects.push(new Ground((- startj - 1) * this.dimension + this.canvasWidth / 2, (- starti - 1) * this.dimension + this.canvasHeight / 2, groundTexture, level.length * this.dimension));
+
+    // ADD BOUNDARIES
+    this.mapObjects.push(new TexturedGameObject((- startj - 2) * this.dimension + this.canvasWidth / 2,
+      (- starti - 2) * this.dimension + this.canvasHeight / 2, wallTexture, (level.length+2) * this.dimension, this.dimension));
+    this.mapObjects.push(new TexturedGameObject((- startj - 2) * this.dimension + this.canvasWidth / 2,
+      (level.length - starti - 1) * this.dimension + this.canvasHeight / 2, wallTexture, (level.length+2) * this.dimension, this.dimension));
+    this.mapObjects.push(new TexturedGameObject((- startj - 2) * this.dimension + this.canvasWidth / 2,
+      (starti - 1) * this.dimension + this.canvasHeight / 2, wallTexture, this.dimension, level.length * this.dimension));
+    this.mapObjects.push(new TexturedGameObject(( level.length - startj -1) * this.dimension + this.canvasWidth / 2,
+      (starti - 1) * this.dimension + this.canvasHeight / 2, wallTexture, this.dimension, level.length * this.dimension));
+
+    // ADD WALLS
     for (var i = 0; i < level.length; i++) {
+      var x = -1;
+      var y = -1;
+      var nrOfTiles = 0;
+
       for (var j = 0; j < level[i].length; j++) {
-        var x = (j - startj - 1) * this.dimension + this.canvasWidth / 2;
-        var y = (i - starti - 1) * this.dimension + this.canvasHeight / 2;
-        switch (level[i][j]) {
-          case 0:
-            var grass = new Ground(x, y, groundTexture, this.dimension);
-            this.mapObjects.push(grass);
-            break;
+        switch(level[i][j]){
           case 1:
-            var wall = new TexturedGameObject(x, y, wallTexture, this.dimension);
-            this.mapObjects.push(wall);
-            break;
+            if(x === -1 || y === -1){
+              x = (j - startj - 1) * this.dimension + this.canvasWidth / 2;
+              y = (i - starti - 1) * this.dimension + this.canvasHeight / 2;
+            }
+            nrOfTiles ++;
+            continue;
           case 2:
-            this.finish = new Finish(x, y, this.dimension);
+            this.finish = new Finish((j - startj - 1) * this.dimension + this.canvasWidth / 2,
+              (i - starti - 1) * this.dimension + this.canvasHeight / 2, this.dimension);
             this.mapObjects.push(this.finish);
             break;
           case -1:
-            this.start = new Ground(x, y, groundTexture, this.dimension);
+            this.start = new Ground((j - startj - 1) * this.dimension + this.canvasWidth / 2,
+              (i - starti - 1) * this.dimension + this.canvasHeight / 2, groundTexture, this.dimension);
             this.mapObjects.push(this.start);
             break;
         }
+        if(nrOfTiles>0) {
+          this.mapObjects.push(new TexturedGameObject(x, y, wallTexture, nrOfTiles * this.dimension, this.dimension));
+        }
+        x = -1;
+        y = -1;
+        nrOfTiles = 0;
+      }
+      if (x !== -1 && y != -1) {
+        if(nrOfTiles > 0) {
+          this.mapObjects.push(new TexturedGameObject(x, y, wallTexture, nrOfTiles * this.dimension, this.dimension));
+        }
       }
     }
+
   }
 
   move(xOfset, yOffset) {
@@ -62,16 +90,10 @@ class LevelMap {
   }
 
   getIntersectionType(player) {
-    var topLeft = this.mapObjects[0].getBounds();
-    var botRight = this.mapObjects[this.mapObjects.length - 1].getBounds();
-    if (player.x < topLeft.x || player.x > botRight.x + player.width ||
-      player.y < topLeft.y || player.y > botRight.y + player.height) {
-      // out of bounds
-      return 'collision'
-    }
     for (var i = 0; i < this.mapObjects.length; i++) {
       var type = this.mapObjects[i].getIntersectionType(player)
       if (type !== 'none') {
+        console.log(this.mapObjects[i])
         return type;
       }
     }

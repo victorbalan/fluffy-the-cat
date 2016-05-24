@@ -61,6 +61,8 @@
           '_categoriesChanged(categories)'
         ],
         refresh: function(){
+          this.userFullName = this.$$('login-service').userFullName;
+          console.log(this.userFullName);
           this.$$('categories-provider').refresh();
         },
         ready: function () {
@@ -100,7 +102,7 @@
         showPlayMenu: function () {
           this.clearStage();
           var element = this;
-          new Menu(this.stage, this.width, this.height, function () {
+          new Menu(this.stage, this.width, this.height, this.userFullName, function () {
             element.showCategorySelection();
           });
         },

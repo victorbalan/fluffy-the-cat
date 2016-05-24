@@ -1,7 +1,9 @@
 class GameObject {
-  constructor(x, y, color, dimension) {
-    this.object = this._square(x, y, color, dimension)
-    this.dimension = dimension;
+  constructor(x, y, color, width, height) {
+    this.object = this._square(x, y, color, width, height)
+    this.dimension = width;
+    this.width = width;
+    this.height = height;
   }
 
   addToStage(stage) {
@@ -12,8 +14,8 @@ class GameObject {
     return {
       x: this.object.x,
       y: this.object.y,
-      width: this.dimension,
-      height: this.dimension
+      width: this.width,
+      height: this.height
     };
   }
 
@@ -21,13 +23,13 @@ class GameObject {
     this.object.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
   }
 
-  addEventListener(event, listener){
+  addEventListener(event, listener) {
     this.object.addEventListener(event, listener);
   }
 
-  _square(x, y, color, dimension) {
+  _square(x, y, color, width, height) {
     var square = new createjs.Shape();
-    square.graphics.beginFill(color).drawRect(0, 0, dimension, dimension);
+    square.graphics.beginFill(color).drawRect(0, 0, width, height);
     square.x = x;
     square.y = y;
     // square.setBounds(x, y, dimension, dimension);

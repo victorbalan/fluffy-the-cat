@@ -1,6 +1,6 @@
 class Finish extends GameObject {
   constructor(x, y, dimension) {
-    super(x, y, 'red', dimension)
+    super(x, y, 'red', dimension, dimension)
   }
 
   getIntersectionType(rect1) {
