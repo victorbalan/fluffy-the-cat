@@ -1,7 +1,8 @@
 class LevelSelection extends BaseMenu {
   // TODO - remove duplicate code
-  constructor(stage, width, height, levels, onLevelSelect) {
-    super(stage, width, height, 'Level selection');
+  constructor(stage, width, height, levels, assetLoader, onLevelSelect) {
+    super(stage, width, height, assetLoader);
+    this.addWalls();
     var self = this;
 
     var row = 0;

@@ -58,7 +58,7 @@
         observers: [
           '_levelChanged(level)',
           '_levelsChanged(levels)',
-          '_categoriesChanged(categories)'
+          '_canLoadMenu(categories, assetsLoaded)'
         ],
         refresh: function(){
           this.userFullName = this.$$('login-service').userFullName;
@@ -66,6 +66,19 @@
           this.$$('categories-provider').refresh();
         },
         ready: function () {
+          var self = this;
+
+          var manifest = [
+            {src: "/images/ground.png", id: "ground"},
+            {src: "/images/brickwall.png", id: "wall"}
+          ];
+
+          var self = this;
+          this.assetLoader = new createjs.LoadQueue(false);
+          this.assetLoader.addEventListener("complete", function(){
+            self.assetsLoaded = true;;
+          });
+          this.assetLoader.loadManifest(manifest, true);
           this.height = Math.floor((window.innerHeight < window.innerWidth ? window.innerHeight -50 : window.innerWidth - 50)/100)*100;
           this.width = Math.floor(window.innerWidth/100) * 100;
           var element = this;
@@ -92,8 +105,8 @@
           }
           this.showLevelSelection();
         },
-        _categoriesChanged: function (categories) {
-          if (!categories || categories.length === 0) {
+        _canLoadMenu: function (categories, assetsLoaded) {
+          if (!categories || categories.length === 0 || !assetsLoaded) {
             return;
           }
           this.stage = new createjs.Stage(this.$.demoCanvas);
@@ -102,7 +115,7 @@
         showPlayMenu: function () {
           this.clearStage();
           var element = this;
-          new Menu(this.stage, this.width, this.height, this.userFullName, function () {
+          new Menu(this.stage, this.width, this.height, this.userFullName, this.assetLoader, function () {
             element.showCategorySelection();
           });
         },
@@ -110,7 +123,7 @@
           this.currentMenu = 'categorySelection';
           this.clearStage();
           var element = this;
-          new CategorySelection(this.stage, this.width, this.height, this.categories, function (categoryId) {
+          new CategorySelection(this.stage, this.width, this.height, this.categories, this.assetLoader, function (categoryId) {
             element.clearStage();
             element.categoryId = categoryId;
           });
@@ -119,7 +132,7 @@
           this.currentMenu = 'levelSelection';
           this.clearStage();
           var element = this;
-          new LevelSelection(this.stage, this.width, this.height, this.levels, function (levelId) {
+          new LevelSelection(this.stage, this.width, this.height, this.levels, this.assetLoader, function (levelId) {
             element.levelId = levelId;
           });
         },

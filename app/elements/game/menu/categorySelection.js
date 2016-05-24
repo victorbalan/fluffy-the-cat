@@ -1,6 +1,7 @@
 class CategorySelection extends BaseMenu {
-  constructor(stage, width, height, categories, onCategorySelect) {
-    super(stage, width, height, "Category selection");
+  constructor(stage, width, height, categories, assetsLoader, onCategorySelect) {
+    super(stage, width, height, assetsLoader);
+    this.addWalls();
     var self = this;
 
     var row = 0;
