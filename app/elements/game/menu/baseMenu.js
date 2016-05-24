@@ -7,7 +7,7 @@ class BaseMenu {
     this.elementWidth = 100;
     this.topOffset = 90;
     this.elementDimension = 100;
-    this.maxElements = height / this.elementWidth - 1;
+    this.maxElements = width / this.elementWidth - 1;
     this.elementXOffset = (width - this.maxElements * this.elementDimension) / 2;
     this.stage = stage;
     this.width = width;
