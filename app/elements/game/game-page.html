@@ -27,6 +27,7 @@
   <script src="levelmap.js"></script>
   <script src="level.js"></script>
   <script src="overlay.js"></script>
+  <script src="torch.js"></script>
   <script src="menu/baseMenu.js"></script>
   <script src="menu/menu.js"></script>
   <script src="menu/levelSelection.js"></script>
@@ -77,8 +78,8 @@
             self.assetsLoaded = true;;
           });
           this.assetLoader.loadManifest(manifest, true);
-          this.height = window.innerHeight - 4;
-          this.width = window.innerWidth;
+          this.height = Math.floor(window.innerHeight / 100) * 100;
+          this.width = Math.floor(window.innerWidth / 100) * 100;
           var element = this;
           window.addEventListener('keydown', function (e) {
             if (e.keyCode !== 8) {
