@@ -156,7 +156,7 @@ class LevelMap {
       '0011': 'hor',
       '0010': 'r',
       '0001': 'l',
-      '0000': 'err'
+      '0000': 'solo'
     };
     var top, bot, left, right;
     if (i === 0) {

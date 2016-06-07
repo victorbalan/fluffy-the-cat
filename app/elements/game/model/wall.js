@@ -17,4 +17,9 @@ class Wall extends GameObject {
     square.y = y;
     return square;
   }
+
+
+  getIntersectionType(rect1) {
+    return this.intersects(rect1) ? 'collision' : 'none';
+  }
 }

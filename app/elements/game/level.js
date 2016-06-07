@@ -15,7 +15,7 @@ const endColor = {
 };
 
 class Game {
-  constructor(stage, width, height, onFinishCallback) {
+  constructor(stage, width, height, assetLoader, onFinishCallback) {
     // NOTE 2.5% would fit perfectly but the map would flicker.
     // TODO - solve
     this.speed = 2 * height / 100;
@@ -26,6 +26,7 @@ class Game {
     this.width = width;
     // TODO - fire event
     this.onFinish = onFinishCallback;
+    this.assetLoader = assetLoader;
     this.registerEvents();
   }
 
@@ -33,36 +34,9 @@ class Game {
     this.stage.removeAllChildren();
     this.stage.update();
     this.mapLength = level.length;
-    var manifest = [
-      {src: "/images/all.png", id: "all"},
-      {src: "/images/b.png", id: "b"},
-      {src: "/images/bl.png", id: "bl"},
-      {src: "/images/blr.png", id: "blr"},
-      {src: "/images/br.png", id: "br"},
-      {src: "/images/hor.png", id: "hor"},
-      {src: "/images/l.png", id: "l"},
-      {src: "/images/r.png", id: "r"},
-      {src: "/images/t.png", id: "t"},
-      {src: "/images/tl.png", id: "tl"},
-      {src: "/images/tlr.png", id: "tlr"},
-      {src: "/images/tbl.png", id: "tbl"},
-      {src: "/images/tbr.png", id: "tbr"},
-      {src: "/images/tr.png", id: "tr"},
-      {src: "/images/ver.png", id: "ver"},
-      {src: "/images/wb.png", id: "wb"},
-      {src: "/images/test_ground.png", id: "ground"},
-      {src: "/images/horizontal_ground.png", id: "horizontal_ground"},
-      {src: "/images/test_wall.png", id: "wall"}
-    ];
-    var self = this;
-    this.assetLoader = new createjs.LoadQueue(false);
-    this.assetLoader.addEventListener("complete", function(){
-      console.log('load complete');
-      console.log(self.assetLoader.getResult('grass'))
-      self.map = new LevelMap(level, self.width, self.height, self.assetLoader);
-      self.start();
-    });
-    this.assetLoader.loadManifest(manifest, true);
+    console.log(this.assetLoader)
+    this.map = new LevelMap(level, this.width, this.height, this.assetLoader);
+    this.start();
     this.loader = new createjs.Shape();
   }
 
@@ -140,7 +114,7 @@ class Game {
       percentFade = 0;
 
     var style = this.extractColorForProgress(percentFade);
-    if(!!this.loader){
+    if (!!this.loader) {
       this.stage.removeChild(this.loader)
     }
 

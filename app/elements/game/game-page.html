@@ -34,6 +34,7 @@
   <script src="menu/baseMenu.js"></script>
   <script src="menu/menu.js"></script>
   <script src="menu/levelSelection.js"></script>
+  <script src="menu/levelSelectionFluffy.js"></script>
   <script src="menu/categorySelection.js"></script>
   <script src="model/gameobject.js"></script>
   <script src="model/texturedgameobject.js"></script>
@@ -75,14 +76,32 @@
           var self = this;
 
           var manifest = [
-            {src: "/images/ground.png", id: "ground"},
-            {src: "/images/brickwall.png", id: "wall"}
+            {src: "/images/all.png", id: "all"},
+            {src: "/images/solo.png", id: "solo"},
+            {src: "/images/b.png", id: "b"},
+            {src: "/images/bl.png", id: "bl"},
+            {src: "/images/blr.png", id: "blr"},
+            {src: "/images/br.png", id: "br"},
+            {src: "/images/hor.png", id: "hor"},
+            {src: "/images/l.png", id: "l"},
+            {src: "/images/r.png", id: "r"},
+            {src: "/images/t.png", id: "t"},
+            {src: "/images/tl.png", id: "tl"},
+            {src: "/images/tlr.png", id: "tlr"},
+            {src: "/images/tbl.png", id: "tbl"},
+            {src: "/images/tbr.png", id: "tbr"},
+            {src: "/images/tr.png", id: "tr"},
+            {src: "/images/ver.png", id: "ver"},
+            {src: "/images/wb.png", id: "wb"},
+            {src: "/images/test_ground.png", id: "ground"},
+            {src: "/images/horizontal_ground.png", id: "horizontal_ground"},
+            {src: "/images/test_wall.png", id: "wall"}
           ];
 
           var self = this;
           this.assetLoader = new createjs.LoadQueue(false);
           this.assetLoader.addEventListener("complete", function(){
-            self.assetsLoaded = true;;
+            self.assetsLoaded = true;
           });
           this.assetLoader.loadManifest(manifest, true);
           this.height = Math.floor(window.innerHeight / 100) * 100;
@@ -136,6 +155,11 @@
           var element = this;
           new CategorySelection(this.stage, this.width, this.height, this.categories, this.assetLoader, function (categoryId) {
             element.clearStage();
+            console.log('cat sel', element.categoryId, categoryId, element.categoryId === categoryId)
+            if(element.categoryId === categoryId){
+              element._levelsChanged(element.levels);
+              return;
+            }
             element.categoryId = categoryId;
           });
         },
@@ -143,7 +167,11 @@
           this.currentMenu = 'levelSelection';
           this.clearStage();
           var element = this;
-          new LevelSelection(this.stage, this.width, this.height, this.levels, this.assetLoader, function (levelId) {
+          new LevelSelectionFluffy(this.stage, this.width, this.height, this.levels, this.assetLoader, function (levelId) {
+            if(element.levelId === levelId){
+              element._levelChanged(element.level);
+              return;
+            }
             element.levelId = levelId;
           });
         },
@@ -168,7 +196,7 @@
             var onFinishCallback = function () {
               element.showLevelSelection();
             };
-            this.game = new Game(this.stage, this.width, this.height, onFinishCallback);
+            this.game = new Game(this.stage, this.width, this.height, this.assetLoader, onFinishCallback);
           }
           this.currentMenu = 'game';
           this.game.startLevel(level);
