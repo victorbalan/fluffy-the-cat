@@ -72,11 +72,10 @@ class Game {
     this.player = new Player(this.map.getStartPos().object.x, this.map.getStartPos().object.y, this.map.getStartPos().dimension);
     this.player.addToStage(this.stage);
 
-    this.stage.update()
     this.overlay = new Overlay(this.stage, this.width, this.height, this.player);
 
-    this.stage.update();
     this.initialFinishDistance = this.getDistanceToFinish();
+    this.stage.update();
   }
 
   clear() {

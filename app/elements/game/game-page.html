@@ -25,7 +25,7 @@
     <level-by-id-provider id="[[levelId]]" data="{{level}}"></level-by-id-provider>
     <login-service on-logged-in="refresh"></login-service>
 
-    <canvas id="demoCanvas" width="[[width]]" height="[[height]]" tabindex="1"></canvas>
+    <canvas id="demoCanvas" width="[[width]]" height="[[height]]" tabindex="1" onclick="focus"></canvas>
   </template>
   <script src="levelmap.js"></script>
   <script src="level.js"></script>
@@ -39,8 +39,6 @@
   <script src="model/texturedgameobject.js"></script>
   <script src="model/finish.js"></script>
   <script src="model/ground.js"></script>
-  <script src="model/levelGround.js"></script>
-  <!--<script src="model/groundTiles.js"></script>-->
   <script src="model/player.js"></script>
   <script src="model/wall.js"></script>
   <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
@@ -64,6 +62,10 @@
           '_levelsChanged(levels)',
           '_canLoadMenu(categories, assetsLoaded)'
         ],
+        focus: function(){
+          console.log('')
+          this.$.demoCanvas.focus();
+        },
         refresh: function(){
           this.userFullName = this.$$('login-service').userFullName;
           console.log(this.userFullName);
@@ -113,6 +115,10 @@
           if (!categories || categories.length === 0 || !assetsLoaded) {
             return;
           }
+          var self = this;
+          this.$.demoCanvas.addEventListener('click', function(){
+            self.$.demoCanvas.focus();
+          })
           this.stage = new createjs.Stage(this.$.demoCanvas);
           this.$.demoCanvas.focus();
           this.showPlayMenu();

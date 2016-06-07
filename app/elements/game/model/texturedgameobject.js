@@ -1,6 +1,7 @@
 class TexturedGameObject extends GameObject{
   constructor(x, y, bmp, width, height) {
-    super(x, y, bmp, width, height);
+    super(width, height);
+    this.object = this._square(x, y, bmp, width, height);
   }
 
   _square(x, y, bmp, width, height) {

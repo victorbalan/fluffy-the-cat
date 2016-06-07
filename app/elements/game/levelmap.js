@@ -57,12 +57,12 @@ class LevelMap {
             this.mapObjects.push(this.finish);
             break;
           case 's':
-            this.start = new LevelGround((j - startj - 1) * this.dimension + this.canvasWidth / 2,
+            this.start = new Ground((j - startj - 1) * this.dimension + this.canvasWidth / 2,
               (i - starti - 1) * this.dimension + this.canvasHeight / 2, loader.getResult(this.getType(l, i, j)), this.dimension);
             this.mapObjects.push(this.start);
             break;
           default:
-            this.mapObjects.push(new LevelGround((j - startj - 1) * this.dimension + this.canvasWidth / 2,
+            this.mapObjects.push(new Ground((j - startj - 1) * this.dimension + this.canvasWidth / 2,
               (i - starti - 1) * this.dimension + this.canvasHeight / 2, loader.getResult(level[i][j]), this.dimension));
             continue;
         }
@@ -163,13 +163,13 @@ class LevelMap {
       top = '0';
     }
     if (i === level.length - 1) {
-      bot = '';
+      bot = '0';
     }
     if (j === 0) {
       left = '0';
     }
     if (j === level.length - 1) {
-      right = '';
+      right = '0';
     }
     top = !!top ? top : (level[i - 1][j] !== 1) ? '1' : '0';
     bot = !!bot ? bot : (level[i + 1][j] !== 1) ? '1' : '0';

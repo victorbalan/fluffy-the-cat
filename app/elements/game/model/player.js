@@ -1,6 +1,7 @@
 class Player extends GameObject {
   constructor(x, y, dimension) {
-    super(x, y, 'DeepSkyBlue', dimension/2)
+    super(dimension, dimension);
+    this.object = this._square(x, y, 'DeepSkyBlue', dimension/2, dimension/2)
     this.animationState = '';
     this.setBounds({x: x, y: y, width: dimension/2, height: dimension/2});
   }
@@ -22,7 +23,7 @@ class Player extends GameObject {
     animation.x = x;
     animation.y = y;
     animation.gotoAndPlay('up');
-    
+
     animation.scaleX = 1.5;
     animation.scaleY = 1.5;
     return animation;

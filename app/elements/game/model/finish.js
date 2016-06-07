@@ -1,6 +1,7 @@
 class Finish extends GameObject {
   constructor(x, y, dimension) {
-    super(x, y, 'red', dimension, dimension)
+    super(dimension, dimension);
+    this.object = this._square(x, y, 'red', dimension, dimension)
   }
 
   getIntersectionType(rect1) {

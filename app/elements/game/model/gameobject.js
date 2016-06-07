@@ -1,11 +1,8 @@
 class GameObject {
-  constructor(x, y, color, width, height) {
-    this.object = this._square(x, y, color, width, height)
-    this.dimension = width;
+  constructor(width, height){
     this.width = width;
     this.height = height;
   }
-
   addToStage(stage) {
     stage.addChild(this.object);
   }
@@ -32,10 +29,17 @@ class GameObject {
     square.graphics.beginFill(color).drawRect(0, 0, width, height);
     square.x = x;
     square.y = y;
-    // square.setBounds(x, y, dimension, dimension);
     return square;
   }
 
+  _squareWithBitmapFill(x, y, bmp, width, height) {
+    var square = new createjs.Shape();
+    square.graphics.beginBitmapFill(bmp).drawRect(0, 0, width, height);
+    square.x = x;
+    square.y = y;
+    return square;
+  }
+  
   moveTo(x, y) {
     var b = this.getBounds();
     this.object.x = x;
