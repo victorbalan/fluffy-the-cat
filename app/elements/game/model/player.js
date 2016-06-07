@@ -34,8 +34,8 @@ class Player extends GameObject {
     animation.y = y;
     animation.gotoAndPlay('up');
 
-    animation.scaleX = 1.5;
-    animation.scaleY = 1.5;
+    animation.scaleX = dimension/31.6;
+    animation.scaleY = dimension/32;
 
     return animation;
   }
