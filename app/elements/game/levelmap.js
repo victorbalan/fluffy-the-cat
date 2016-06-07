@@ -87,6 +87,7 @@ class LevelMap {
       var type = this.mapObjects[i].getIntersectionType(player)
       if (type !== 'none') {
         console.log(this.mapObjects[i])
+        console.log(player);
         return type;
       }
     }

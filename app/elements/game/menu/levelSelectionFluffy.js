@@ -20,7 +20,6 @@ class LevelSelectionFluffy {
       }
       var row = [];
       for (i = 0; i < this.maxElements - 1; i++) {
-        console.log(j, j % 4)
         if (j % 4 === 1 && i === this.maxElements - 2) {
           row.push(0);
           continue;
@@ -41,8 +40,8 @@ class LevelSelectionFluffy {
 
     var grounds = this.process(groundsUnprocessed);
 
-    this.printMatrix(groundsUnprocessed);
-    this.printMatrix(grounds);
+    // this.printMatrix(groundsUnprocessed);
+    // this.printMatrix(grounds);
 
     var groundObjects = [];
     var levelCounter = 0;

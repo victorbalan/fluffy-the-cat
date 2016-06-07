@@ -34,7 +34,6 @@ class Game {
     this.stage.removeAllChildren();
     this.stage.update();
     this.mapLength = level.length;
-    console.log(this.assetLoader)
     this.map = new LevelMap(level, this.width, this.height, this.assetLoader);
     this.start();
     this.loader = new createjs.Shape();
@@ -42,8 +41,7 @@ class Game {
 
   start() {
     this.map.addToStage(this.stage);
-
-    this.player = new Player(this.map.getStartPos().object.x, this.map.getStartPos().object.y, this.map.getStartPos().dimension);
+    this.player = new Player(this.map.getStartPos().object.x, this.map.getStartPos().object.y, this.map.dimension);
     this.player.addToStage(this.stage);
 
     this.overlay = new Overlay(this.stage, this.width, this.height, this.player);

@@ -25,7 +25,7 @@
     <level-by-id-provider id="[[levelId]]" data="{{level}}"></level-by-id-provider>
     <login-service on-logged-in="refresh"></login-service>
 
-    <canvas id="demoCanvas" width="[[width]]" height="[[height]]" tabindex="1" onclick="focus"></canvas>
+    <canvas id="demoCanvas" width="[[width]]" height="[[height]]" tabindex="1" ></canvas>
   </template>
   <script src="levelmap.js"></script>
   <script src="level.js"></script>
@@ -63,10 +63,6 @@
           '_levelsChanged(levels)',
           '_canLoadMenu(categories, assetsLoaded)'
         ],
-        focus: function(){
-          console.log('')
-          this.$.demoCanvas.focus();
-        },
         refresh: function(){
           this.userFullName = this.$$('login-service').userFullName;
           console.log(this.userFullName);
@@ -135,9 +131,6 @@
             return;
           }
           var self = this;
-          this.$.demoCanvas.addEventListener('click', function(){
-            self.$.demoCanvas.focus();
-          })
           this.stage = new createjs.Stage(this.$.demoCanvas);
           this.$.demoCanvas.focus();
           this.showPlayMenu();
@@ -155,7 +148,6 @@
           var element = this;
           new CategorySelection(this.stage, this.width, this.height, this.categories, this.assetLoader, function (categoryId) {
             element.clearStage();
-            console.log('cat sel', element.categoryId, categoryId, element.categoryId === categoryId)
             if(element.categoryId === categoryId){
               element._levelsChanged(element.levels);
               return;
