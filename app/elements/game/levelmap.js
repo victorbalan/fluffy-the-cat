@@ -23,7 +23,7 @@ class LevelMap {
         }
       }
     }
-    this.mapObjects.push(new Ground((- startj - 1) * this.dimension + this.canvasWidth / 2, (- starti - 1) * this.dimension + this.canvasHeight / 2, groundTexture, level.length * this.dimension));
+    this.mapObjects.push(new LevelGround((- startj - 1) * this.dimension + this.canvasWidth / 2, (- starti - 1) * this.dimension + this.canvasHeight / 2, groundTexture, level.length * this.dimension, this.dimension));
 
     // ADD BOUNDARIES
     this.mapObjects.push(new TexturedGameObject((- startj - 2) * this.dimension + this.canvasWidth / 2,
@@ -62,7 +62,7 @@ class LevelMap {
             break;
         }
         if(nrOfTiles>0) {
-          this.mapObjects.push(new TexturedGameObject(x, y, wallTexture, nrOfTiles * this.dimension, this.dimension));
+          this.mapObjects.push(new Wall(x, y, wallTexture, nrOfTiles * this.dimension, this.dimension));
         }
         x = -1;
         y = -1;
@@ -70,7 +70,7 @@ class LevelMap {
       }
       if (x !== -1 && y != -1) {
         if(nrOfTiles > 0) {
-          this.mapObjects.push(new TexturedGameObject(x, y, wallTexture, nrOfTiles * this.dimension, this.dimension));
+          this.mapObjects.push(new Wall(x, y, wallTexture, nrOfTiles * this.dimension, this.dimension));
         }
       }
     }

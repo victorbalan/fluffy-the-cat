@@ -34,8 +34,8 @@ class Game {
     this.stage.update();
     this.mapLength = level.length;
     var manifest = [
-      {src: "/images/ground.png", id: "ground"},
-      {src: "/images/brickwall.png", id: "wall"}
+      {src: "/images/test_ground.png", id: "ground"},
+      {src: "/images/test_wall.png", id: "wall"}
     ];
     var self = this;
     this.assetLoader = new createjs.LoadQueue(false);
