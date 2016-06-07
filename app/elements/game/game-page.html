@@ -27,7 +27,7 @@
     <my-games-provider data="{{finishedGames}}"></my-games-provider>
     <levels-by-category-provider category="[[categoryId]]" data="{{levels}}"></levels-by-category-provider>
     <start-level-request id="[[levelId]]" data="{{startedGame}}"></start-level-request>
-    <finish-game-request id="[[startedGame._id]]" on-game-finished="showLevelSelection"></finish-game-request>
+    <finish-game-request id="[[startedGame._id]]" on-game-finished="_gameFinished"></finish-game-request>
     <level-by-id-provider id="[[startedGame.level]]" data="{{level}}"></level-by-id-provider>
     <login-service on-logged-in="refresh"></login-service>
 
@@ -117,6 +117,9 @@
             element.goBack();
           });
         },
+        _gameFinished: function(){
+          this.$$('my-games-provider').refresh();
+        },
         _getLabel: function (item) {
           return 'd: ' + item.difficulty + ' sd: ' + item.subDifficulty;
         },
@@ -190,7 +193,6 @@
           if (!this.game) {
             var element = this;
             var onFinishCallback = function () {
-              element.$$('my-games-provider').refresh();
               element.$$('finish-game-request').refresh();
             };
             this.game = new Game(this.stage, this.width, this.height, this.assetLoader, onFinishCallback);
