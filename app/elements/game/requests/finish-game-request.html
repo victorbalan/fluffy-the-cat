@@ -1,0 +1,35 @@
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="finish-game-request">
+  <style>
+    :host {
+      display: none;
+    }
+  </style>
+  <template>
+    <iron-ajax
+      id="request"
+      headers="[[headers]]"
+      method="PUT"
+      url="[[baseUrl]]/games/[[id]]/finish"
+      handle-as="json"
+      on-response="_onResponse">
+    </iron-ajax>
+  </template>
+  <script type="application/javascript" src="../../../scripts/behaviors/general-provider-behavior.js"></script>
+  <script>
+    Polymer({
+      is: 'finish-game-request',
+      behaviors: [
+        Behaviors.Providers.General
+      ],
+      refresh: function () {
+        this.refreshToken();
+        this.$.request.generateRequest();
+      },
+      _onResponse: function () {
+        this.fire('game-finished');
+      }
+    });
+  </script>
+</dom-module>

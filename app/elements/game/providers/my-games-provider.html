@@ -1,0 +1,32 @@
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="my-games-provider">
+  <style>
+    :host {
+      display: none;
+    }
+  </style>
+  <template>
+    <iron-ajax
+      id="request"
+      headers="[[headers]]"
+      method="GET"
+      url="[[baseUrl]]/games"
+      handle-as="json"
+      last-response="{{data}}">
+    </iron-ajax>
+  </template>
+  <script type="application/javascript" src="../../../scripts/behaviors/general-provider-behavior.js"></script>
+  <script>
+    Polymer({
+      is: 'my-games-provider',
+      behaviors: [
+        Behaviors.Providers.General
+      ],
+      refresh: function () {
+        this.refreshToken();
+        this.$.request.generateRequest();
+      }
+    });
+  </script>
+</dom-module>

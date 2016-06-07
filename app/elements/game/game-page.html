@@ -4,6 +4,9 @@
 <link rel="import" href="providers/levels-by-category-provider.html">
 <link rel="import" href="providers/level-by-id-provider.html">
 <link rel="import" href="providers/categories-provider.html">
+<link rel="import" href="providers/my-games-provider.html">
+<link rel="import" href="requests/start-level-request.html">
+<link rel="import" href="requests/finish-game-request.html">
 <link rel="import" href="services/login-service.html">
 
 <dom-module id="game-page">
@@ -21,8 +24,11 @@
       }
     </style>
     <categories-provider data="{{categories}}"></categories-provider>
+    <my-games-provider data="{{finishedGames}}"></my-games-provider>
     <levels-by-category-provider category="[[categoryId]]" data="{{levels}}"></levels-by-category-provider>
-    <level-by-id-provider id="[[levelId]]" data="{{level}}"></level-by-id-provider>
+    <start-level-request id="[[levelId]]" data="{{startedGame}}"></start-level-request>
+    <finish-game-request id="[[startedGame._id]]" on-game-finished="showLevelSelection"></finish-game-request>
+    <level-by-id-provider id="[[startedGame.level]]" data="{{level}}"></level-by-id-provider>
     <login-service on-logged-in="refresh"></login-service>
 
     <canvas id="demoCanvas" width="[[width]]" height="[[height]]" tabindex="1" ></canvas>
@@ -60,7 +66,7 @@
         },
         observers: [
           '_levelChanged(level)',
-          '_levelsChanged(levels)',
+          '_canLoadLevelSelectionMenu(levels, finishedGames)',
           '_canLoadMenu(categories, assetsLoaded)'
         ],
         refresh: function(){
@@ -120,7 +126,7 @@
           }
           this.newgame(JSON.parse(level.map));
         },
-        _levelsChanged: function (levels) {
+        _canLoadLevelSelectionMenu: function (levels) {
           if (!levels || levels.length === 0) {
             return;
           }
@@ -131,6 +137,7 @@
             return;
           }
           var self = this;
+          this.$$('my-games-provider').refresh();
           this.stage = new createjs.Stage(this.$.demoCanvas);
           this.$.demoCanvas.focus();
           this.showPlayMenu();
@@ -149,7 +156,7 @@
           new CategorySelection(this.stage, this.width, this.height, this.categories, this.assetLoader, function (categoryId) {
             element.clearStage();
             if(element.categoryId === categoryId){
-              element._levelsChanged(element.levels);
+              element._canLoadLevelSelectionMenu(element.levels, element.finishedGames);
               return;
             }
             element.categoryId = categoryId;
@@ -159,12 +166,9 @@
           this.currentMenu = 'levelSelection';
           this.clearStage();
           var element = this;
-          new LevelSelectionFluffy(this.stage, this.width, this.height, this.levels, this.assetLoader, function (levelId) {
-            if(element.levelId === levelId){
-              element._levelChanged(element.level);
-              return;
-            }
+          new LevelSelectionFluffy(this.stage, this.width, this.height, this.levels, this.assetLoader, this.finishedGames, function (levelId) {
             element.levelId = levelId;
+            element.$$('start-level-request').refresh();
           });
         },
         goBack: function(){
@@ -186,7 +190,8 @@
           if (!this.game) {
             var element = this;
             var onFinishCallback = function () {
-              element.showLevelSelection();
+              element.$$('my-games-provider').refresh();
+              element.$$('finish-game-request').refresh();
             };
             this.game = new Game(this.stage, this.width, this.height, this.assetLoader, onFinishCallback);
           }

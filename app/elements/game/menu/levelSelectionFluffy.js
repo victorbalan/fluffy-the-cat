@@ -1,11 +1,15 @@
 class LevelSelectionFluffy {
   // TODO - remove duplicate code. very very bad code(copied half from level map) refactor SOON.
-  constructor(stage, width, height, levels, loader, onLevelSelect) {
+  constructor(stage, width, height, levels, loader, finishedGames, onLevelSelect) {
     var self = this;
-
+    console.log(finishedGames);
+    var finishedGamesMap = {};
+    for (var i = 0; i < finishedGames.length; i++) {
+      finishedGamesMap[finishedGames[i].level] = 'ok';
+    }
     this.elementWidth = height / 10;
     this.elementDimension = height / 10;
-    this.maxElements = width / this.elementWidth - 1;
+    this.maxElements = Math.floor(width / this.elementWidth - 1);
     this.elementXOffset = (width - this.maxElements * this.elementDimension) / 2;
     this.stage = stage;
     this.width = width;
@@ -13,7 +17,8 @@ class LevelSelectionFluffy {
 
     var groundsUnprocessed = [];
     var j = 0;
-    var i=0;
+    var i = 0;
+    // TODO construct in back end
     while (i * j / 4 < levels.length) {
       if (j === (height / this.elementWidth - 1)) {
         j = 0;
@@ -40,12 +45,13 @@ class LevelSelectionFluffy {
 
     var grounds = this.process(groundsUnprocessed);
 
-    // this.printMatrix(groundsUnprocessed);
-    // this.printMatrix(grounds);
+    this.printMatrix(groundsUnprocessed);
+    this.printMatrix(grounds);
 
     var groundObjects = [];
     var levelCounter = 0;
     var textObjects = [];
+    var lastCompleted = -1;
     for (var i = 0; i < grounds.length; i++) {
       for (var j = 0; j < grounds[i].length; j++) {
         switch (grounds[i][j]) {
@@ -58,23 +64,37 @@ class LevelSelectionFluffy {
           default:
             if (j % 2 === 0 && i % 2 === 0 && levelCounter < levels.length) {
               var level = levels[levelCounter];
-              var txt = this._text(level.subDifficulty, "bold 20px Arial", (j + 1) * this.elementDimension + 50, (i + 1) * this.elementDimension + 30, {
-                color: '#FFAA00',
-                cursor: 'pointer'
+              var color = 'grey';
+              var cursor = undefined;
+              if (!!finishedGamesMap[level._id]) {
+                color = 'green';
+                cursor = 'pointer';
+                lastCompleted = levelCounter;
+              }
+              if (lastCompleted === levelCounter - 1 || lastCompleted === -1) {
+                lastCompleted = -2;
+                cursor = 'pointer';
+                color = '#FFAA00';
+              }
+              var txt = this._text(level.levelKey, "bold 20px Arial", (j + 1) * this.elementDimension + this.elementDimension / 2, (i + 1) * this.elementDimension + this.elementDimension / 3, {
+                color: color,
+                cursor: cursor
               });
+              if (color !== 'grey') {
+                txt.levelId = level._id;
+                txt.mainColor = color;
 
-              txt.levelId = level._id;
-
-              txt.hitArea = this._hitArea(0, 0, 40, 40);
-              txt.addEventListener('mouseover', function (evt) {
-                self._mouseOver(evt, stage);
-              });
-              txt.addEventListener('mouseout', function (evt) {
-                self._mouseOut(evt, stage);
-              });
-              txt.addEventListener('click', function (evt) {
-                onLevelSelect(evt.target.levelId);
-              });
+                txt.hitArea = this._hitArea(0, 0, 40, 40);
+                txt.addEventListener('mouseover', function (evt) {
+                  self._mouseOver(evt, stage);
+                });
+                txt.addEventListener('mouseout', function (evt) {
+                  self._mouseOut(evt, stage, evt.target.mainColor);
+                });
+                txt.addEventListener('click', function (evt) {
+                  onLevelSelect(evt.target.levelId);
+                });
+              }
               textObjects.push(txt);
               levelCounter++;
             }
@@ -156,10 +176,10 @@ class LevelSelectionFluffy {
     stage.update();
   }
 
-  _mouseOut(evt, stage) {
+  _mouseOut(evt, stage, color) {
     evt.target.scaleX = 1;
     evt.target.scaleY = 1;
-    evt.target.color = '#FFAA00';
+    evt.target.color = color;
     stage.update();
   }
 
@@ -227,7 +247,7 @@ class LevelSelectionFluffy {
     if (j === 0) {
       left = '0';
     }
-    if (j === level.length - 1) {
+    if (j === level[i].length - 1) {
       right = '0';
     }
     top = !!top ? top : (level[i - 1][j] !== 1) ? '1' : '0';

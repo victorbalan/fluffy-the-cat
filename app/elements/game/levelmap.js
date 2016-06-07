@@ -15,7 +15,7 @@ class LevelMap {
     var startj = 0;
     for (var i = 0; i < level.length; i++) {
       for (var j = 0; j < level[i].length; j++) {
-        if (level[i][j] === -1) {
+        if (level[i][j] === 's') {
           starti = i;
           startj = j;
         }
@@ -34,36 +34,30 @@ class LevelMap {
     this.addLevel(level, starti, startj, loader, groundTexture);
   }
 
-  addLevel(l, starti, startj, loader, groundTexture) {
-    var level = this.process(l);
+  addLevel(level, starti, startj, loader, groundTexture) {
+    this.printMatrix(level)
     for (var i = 0; i < level.length; i++) {
-      var x = -1;
-      var y = -1;
-      var nrOfTiles = 0;
-
       for (var j = 0; j < level[i].length; j++) {
+        var x = (j - startj - 1) * this.dimension + this.canvasWidth / 2;
+        var y = (i - starti - 1) * this.dimension + this.canvasHeight / 2;
         switch (level[i][j]) {
           case '1':
-            this.mapObjects.push(new Wall((j - startj - 1) * this.dimension + this.canvasWidth / 2,
-              (i - starti - 1) * this.dimension + this.canvasHeight / 2, null, this.dimension, this.dimension));
+            this.mapObjects.push(new Wall(x, y, null, this.dimension, this.dimension));
             break;
           case 'wb':
-            this.mapObjects.push(new Wall((j - startj - 1) * this.dimension + this.canvasWidth / 2,
-              (i - starti - 1) * this.dimension + this.canvasHeight / 2, loader.getResult(level[i][j]), this.dimension, this.dimension));
+            this.mapObjects.push(new Wall(x, y, loader.getResult(level[i][j]), this.dimension, this.dimension));
             break;
           case 'f':
-            this.finish = new Finish((j - startj - 1) * this.dimension + this.canvasWidth / 2,
-              (i - starti - 1) * this.dimension + this.canvasHeight / 2, this.dimension);
+            this.finish = new Finish(x, y, this.dimension);
             this.mapObjects.push(this.finish);
             break;
           case 's':
-            this.start = new Ground((j - startj - 1) * this.dimension + this.canvasWidth / 2,
-              (i - starti - 1) * this.dimension + this.canvasHeight / 2, loader.getResult(this.getType(l, i, j)), this.dimension);
+            // TODO process start orientaiton in backend
+            this.start = new Ground(x, y, loader.getResult(level[i][j]), this.dimension);
             this.mapObjects.push(this.start);
             break;
           default:
-            this.mapObjects.push(new Ground((j - startj - 1) * this.dimension + this.canvasWidth / 2,
-              (i - starti - 1) * this.dimension + this.canvasHeight / 2, loader.getResult(level[i][j]), this.dimension));
+            this.mapObjects.push(new Ground(x, y, loader.getResult(level[i][j]), this.dimension));
             continue;
         }
       }
@@ -105,87 +99,7 @@ class LevelMap {
   getStartPos() {
     return this.start;
   }
-
-  process(level) {
-    var pl = new Array();
-    for (var i = 0; i < level.length; i++) {
-      pl.push(new Array(level[i].length));
-      for (var j = 0; j < level[i].length; j++) {
-        switch (level[i][j]) {
-          case 0:
-            pl[i][j] = this.getType(level, i, j);
-            break;
-          case 1:
-            pl[i][j] = this.getWallType(level, i, j);
-            break;
-          case -1:
-            pl[i][j] = 's';
-            break;
-          case 2:
-            pl[i][j] = 'f';
-            break;
-        }
-      }
-    }
-    return pl;
-  }
-
-  getWallType(level, i, j) {
-    if (i === 0) {
-      return '1';
-    }
-    if (level[i - 1][j] != 1) {
-      return 'wb';
-    }
-    return '1';
-  }
-
-  getType(level, i, j) {
-    var typesmap = {
-      '1111': 'all',
-      '1110': 'tbl',
-      '1101': 'tbr',
-      '1100': 'ver',
-      '1011': 'tlr',
-      '1010': 'tl',
-      '1001': 'tr',
-      '1000': 'b',
-      '0111': 'blr',
-      '0110': 'bl',
-      '0101': 'br',
-      '0100': 't',
-      '0011': 'hor',
-      '0010': 'r',
-      '0001': 'l',
-      '0000': 'solo'
-    };
-    var top, bot, left, right;
-    if (i === 0) {
-      top = '0';
-    }
-    if (i === level.length - 1) {
-      bot = '0';
-    }
-    if (j === 0) {
-      left = '0';
-    }
-    if (j === level.length - 1) {
-      right = '0';
-    }
-    top = !!top ? top : (level[i - 1][j] !== 1) ? '1' : '0';
-    bot = !!bot ? bot : (level[i + 1][j] !== 1) ? '1' : '0';
-    left = !!left ? left : (level[i][j - 1] !== 1) ? '1' : '0';
-    right = !!right ? right : (level[i][j + 1] !== 1) ? '1' : '0';
-
-    var val = typesmap[top + bot + left + right];
-    if (!!val) {
-      return val;
-    } else {
-      console.log('und', top, bot, left, right);
-      return 'und';
-    }
-  }
-
+  
   printMatrix(m) {
     var line = '';
     for (var i = 0; i < m.length; i++) {
