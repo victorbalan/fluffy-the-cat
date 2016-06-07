@@ -34,7 +34,24 @@ class Game {
     this.stage.update();
     this.mapLength = level.length;
     var manifest = [
+      {src: "/images/all.png", id: "all"},
+      {src: "/images/b.png", id: "b"},
+      {src: "/images/bl.png", id: "bl"},
+      {src: "/images/blr.png", id: "blr"},
+      {src: "/images/br.png", id: "br"},
+      {src: "/images/hor.png", id: "hor"},
+      {src: "/images/l.png", id: "l"},
+      {src: "/images/r.png", id: "r"},
+      {src: "/images/t.png", id: "t"},
+      {src: "/images/tl.png", id: "tl"},
+      {src: "/images/tlr.png", id: "tlr"},
+      {src: "/images/tbl.png", id: "tbl"},
+      {src: "/images/tbr.png", id: "tbr"},
+      {src: "/images/tr.png", id: "tr"},
+      {src: "/images/ver.png", id: "ver"},
+      {src: "/images/wb.png", id: "wb"},
       {src: "/images/test_ground.png", id: "ground"},
+      {src: "/images/horizontal_ground.png", id: "horizontal_ground"},
       {src: "/images/test_wall.png", id: "wall"}
     ];
     var self = this;
