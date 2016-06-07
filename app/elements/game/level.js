@@ -130,8 +130,9 @@ class Game {
         break;
     }
     this.map.move(x, y);
-    this.stage.update();
+    this.overlay.move(x, y);
     this.handleProgress(this.normalizeDistance(this.getDistanceToFinish()));
+    this.stage.update();
   }
 
   handleProgress(distance) {
@@ -140,6 +141,9 @@ class Game {
       percentFade = 0;
 
     var style = this.extractColorForProgress(percentFade);
+    if(!!this.loader){
+      this.stage.removeChild(this.loader)
+    }
 
     // TODO: workaround to 'refresh' the progress bar
     this.loader.graphics.beginFill("#000000").setStrokeStyle(3).beginStroke("rgba(0,0,0, 1)")

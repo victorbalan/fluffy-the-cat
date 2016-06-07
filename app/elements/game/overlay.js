@@ -1,29 +1,42 @@
-// TODO - es6
-function Overlay(stage, width, height, player) {
-  var bounds = player.getBounds();
-  bounds.x = bounds.x + bounds.width/2;
-  bounds.y = bounds.y + bounds.height/2;
-  var shape = new createjs.Shape();
-  stage.addChild(shape);
-  shape.graphics.beginFill("#000");
-  shape.graphics.drawRect(0, 0, width, height);
-  shape.graphics.arc(bounds.x, bounds.y, height/2, 0, Math.PI * 2, true).closePath()
-  shape.graphics.beginRadialGradientFill(["transparent","#000"], [0, 1], bounds.x, bounds.y, 1, bounds.x, bounds.y, height/3)
-    .arc(bounds.x, bounds.y, height/2, 0, Math.PI * 2, true).closePath();
-  stage.update();
+class Overlay {
+  constructor(stage, width, height, p) {
+    this.stage = stage;
+    this.width = width;
+    this.height = height;
+    var pb = p.getBounds();
+    this.player = {x: pb.x, y: pb.y, width: pb.width, height: pb.height};
+    this.player.x = this.player.x + this.player.width / 2;
+    this.player.y = this.player.y + this.player.height / 2;
 
-  function show(){
-    shape.visible = true;
-    stage.update();
+    this.updateOverlay();
   }
 
-  function hide(){
-    shape.visible = false;
-    stage.update();
+  show() {
+    this.overlay.visible = true;
+    this.stage.update();
   }
 
-  return {
-    show: show,
-    hide: hide
+  hide() {
+    this.overlay.visible = false;
+    this.stage.update();
+  }
+
+  move(x, y) {
+    // used when we add torches
+    // mby replace overlay with an alpha mask
+  }
+
+  updateOverlay() {
+    if (!!this.overlay) {
+      this.stage.removeChild(this.overlay);
+    }
+    this.overlay = new createjs.Shape();
+    this.overlay.graphics.beginFill("#000");
+    this.overlay.graphics.drawRect(0, 0, this.width, this.height);
+
+    this.overlay.graphics.arc(this.player.x, this.player.y, this.height / 2, 0, Math.PI * 2, true).closePath();
+    this.overlay.graphics.beginRadialGradientFill(["transparent", "#000"], [0, 1], this.player.x, this.player.y, 1, this.player.x, this.player.y, this.height / 3)
+      .arc(this.player.x, this.player.y, this.height / 2, 0, Math.PI * 2, true).closePath();
+    this.stage.addChild(this.overlay);
   }
 }
