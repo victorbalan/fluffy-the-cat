@@ -1,6 +1,7 @@
 class LevelSelectionFluffy {
   // TODO - remove duplicate code. very very bad code(copied half from level map) refactor SOON.
   constructor(stage, width, height, grounds, loader, finishedGames, onLevelSelect) {
+    stage.enableMouseOver(10);
     var self = this;
     console.log(finishedGames);
     var finishedGamesMap = {};
@@ -95,8 +96,50 @@ class LevelSelectionFluffy {
       scroll(delta);
     }, false);
     stage.update()
+    this.drawTopMenu();
   }
 
+  drawTopMenu() {
+    var bar = this._square(0, 0, 'DeepSkyBlue', this.width, 50);
+    var self = this;
+    this.stage.addChild(bar);
+    var color = '#FFAA00';
+    var instructions = this._text('Instructions', "bold 20px Arial", 5, 5, {
+      color: color,
+      cursor: 'pointer'
+    });
+    instructions.mainColor = color;
+
+    instructions.hitArea = this._hitArea(0, 0, 100, 40);
+    instructions.addEventListener('mouseover', function (evt) {
+      self._mouseOver(evt, self.stage);
+    });
+    instructions.addEventListener('mouseout', function (evt) {
+      self._mouseOut(evt, self.stage, evt.target.mainColor);
+    });
+    instructions.addEventListener('click', function (evt) {
+      alert('Instructions')
+    });
+    this.stage.addChild(instructions);
+    var tutorial = this._text('Tutorial', "bold 20px Arial", 200, 5, {
+      color: color,
+      cursor: 'pointer'
+    });
+    tutorial.mainColor = color;
+
+    tutorial.hitArea = this._hitArea(0, 0, 100, 40);
+    tutorial.addEventListener('mouseover', function (evt) {
+      self._mouseOver(evt, self.stage);
+    });
+    tutorial.addEventListener('mouseout', function (evt) {
+      self._mouseOut(evt, self.stage, evt.target.mainColor);
+    });
+    tutorial.addEventListener('click', function (evt) {
+      alert('Tutorial')
+    });
+    this.stage.addChild(tutorial);
+    this.stage.update();
+  }
 
   printMatrix(m) {
     var line = '';
@@ -127,6 +170,14 @@ class LevelSelectionFluffy {
       }
     }
     return txt;
+  }
+
+  _square(x, y, color, width, height) {
+    var square = new createjs.Shape();
+    square.graphics.beginFill(color).drawRect(0, 0, width, height);
+    square.x = x;
+    square.y = y;
+    return square;
   }
 
   _hitArea(x, y, width, height) {

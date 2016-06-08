@@ -3,7 +3,6 @@
 
 <link rel="import" href="providers/levels-by-category-provider.html">
 <link rel="import" href="providers/level-by-id-provider.html">
-<link rel="import" href="providers/categories-provider.html">
 <link rel="import" href="providers/levels-map-provider.html">
 <link rel="import" href="providers/my-games-provider.html">
 <link rel="import" href="requests/start-level-request.html">
@@ -25,7 +24,6 @@
       }
     </style>
     <levels-map-provider data="{{levelsMap}}"></levels-map-provider>
-    <categories-provider data="{{categories}}"></categories-provider>
     <my-games-provider data="{{finishedGames}}"></my-games-provider>
     <levels-by-category-provider category="[[categoryId]]" data="{{levels}}"></levels-by-category-provider>
     <start-level-request id="[[levelId]]" data="{{startedGame}}"></start-level-request>
@@ -39,11 +37,7 @@
   <script src="level.js"></script>
   <script src="overlay.js"></script>
   <script src="torch.js"></script>
-  <script src="menu/baseMenu.js"></script>
-  <script src="menu/menu.js"></script>
-  <script src="menu/levelSelection.js"></script>
   <script src="menu/levelSelectionFluffy.js"></script>
-  <script src="menu/categorySelection.js"></script>
   <script src="model/gameobject.js"></script>
   <script src="model/texturedgameobject.js"></script>
   <script src="model/finish.js"></script>
@@ -67,18 +61,11 @@
           }
         },
         observers: [
+          '_assetsLoaded(assetsLoaded)',
           '_levelChanged(level)',
-          '_canLoadLevelSelectionMenu(levelsMap, finishedGames)',
-          '_canLoadMenu(categories, assetsLoaded)'
+          '_canLoadLevelSelectionMenu(levelsMap, finishedGames)'
         ],
-        refresh: function(){
-          this.userFullName = this.$$('login-service').userFullName;
-          console.log(this.userFullName);
-          this.$$('categories-provider').refresh();
-        },
-        ready: function () {
-          var self = this;
-
+        _loadAssets: function(){
           var manifest = [
             {src: "/images/all.png", id: "all"},
             {src: "/images/solo.png", id: "solo"},
@@ -108,9 +95,8 @@
             self.assetsLoaded = true;
           });
           this.assetLoader.loadManifest(manifest, true);
-          this.height = Math.floor(window.innerHeight / 100) * 100;
-          this.width = Math.floor(window.innerWidth / 100) * 100;
-          this.$$('levels-map-provider').refresh();
+        },
+        _registerEvents: function(){
           var element = this;
           window.addEventListener('keydown', function (e) {
             if (e.keyCode !== 8) {
@@ -119,6 +105,24 @@
             e.preventDefault();
             element.goBack();
           });
+        },
+        _assetsLoaded: function(){
+          this.stage = new createjs.Stage(this.$.demoCanvas);
+          this.$.demoCanvas.focus();
+          this.clearStage();
+        },
+        refresh: function(){
+          this.userFullName = this.$$('login-service').userFullName;
+          this.$$('my-games-provider').refresh();
+          console.log(this.userFullName);
+        },
+        ready: function () {
+          this._loadAssets();
+          this._registerEvents();
+          this.height = Math.floor(window.innerHeight / 100) * 100;
+          this.width = Math.floor(window.innerWidth / 100) * 100;
+
+          this.$$('levels-map-provider').refresh();
         },
         _gameFinished: function(){
           this.$$('my-games-provider').refresh();
@@ -141,37 +145,6 @@
           }
           this.showLevelSelection();
         },
-        _canLoadMenu: function (categories, assetsLoaded) {
-          console.log('menu')
-          if (!categories || categories.length === 0 || !assetsLoaded) {
-            return;
-          }
-          var self = this;
-          this.$$('my-games-provider').refresh();
-          this.stage = new createjs.Stage(this.$.demoCanvas);
-          this.$.demoCanvas.focus();
-          this.showPlayMenu();
-        },
-        showPlayMenu: function () {
-          this.clearStage();
-          var element = this;
-          new Menu(this.stage, this.width, this.height, this.userFullName, this.assetLoader, function () {
-            element.showCategorySelection();
-          });
-        },
-        showCategorySelection: function () {
-          this.currentMenu = 'categorySelection';
-          this.clearStage();
-          var element = this;
-          new CategorySelection(this.stage, this.width, this.height, this.categories, this.assetLoader, function (categoryId) {
-            element.clearStage();
-            if(element.categoryId === categoryId){
-              element._canLoadLevelSelectionMenu(element.levelsMap, element.finishedGames);
-              return;
-            }
-            element.categoryId = categoryId;
-          });
-        },
         showLevelSelection: function () {
           this.currentMenu = 'levelSelection';
           this.clearStage();
@@ -183,16 +156,10 @@
         },
         goBack: function(){
           switch(this.currentMenu){
-            case 'play':
+            case 'levelSelection':
               return;
             case 'game':
               this.showLevelSelection();
-              return;
-            case 'levelSelection':
-              this.showCategorySelection();
-              return;
-            case 'categorySelection':
-              this.showPlayMenu();
               return;
           }
         },
