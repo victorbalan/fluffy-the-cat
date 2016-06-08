@@ -36,7 +36,6 @@ class LevelMap {
   }
 
   addLevel(level, starti, startj, loader, groundTexture) {
-    this.printMatrix(level)
     for (var i = 0; i < level.length; i++) {
       for (var j = 0; j < level[i].length; j++) {
         var x = (j - startj - 1) * this.dimension + this.canvasWidth / 2;
@@ -81,8 +80,6 @@ class LevelMap {
     for (var i = 0; i < this.mapObjects.length; i++) {
       var type = this.mapObjects[i].getIntersectionType(player)
       if (type !== 'none') {
-        console.log(this.mapObjects[i])
-        console.log(player);
         return type;
       }
     }

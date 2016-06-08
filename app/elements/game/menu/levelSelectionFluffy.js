@@ -18,14 +18,17 @@ class LevelSelectionFluffy {
     var groundObjects = [];
     var textObjects = [];
     var lastLevel;
+    var currentY = 0;
     for (var i = 0; i < grounds.length; i++) {
       for (var j = 0; j < grounds[i].length; j++) {
+        var x = j * this.elementDimension;
+        var y = i * this.elementDimension;
         switch (grounds[i][j]) {
           case '1':
-            groundObjects.push(new Wall((j + 1) * this.elementDimension, (i + 1) * this.elementDimension, null, this.elementDimension, this.elementDimension));
+            groundObjects.push(new Wall(x, y, null, this.elementDimension, this.elementDimension));
             break;
           case 'wb':
-            groundObjects.push(new Wall((j + 1) * this.elementDimension, (i + 1) * this.elementDimension, loader.getResult(grounds[i][j]), this.elementDimension, this.elementDimension));
+            groundObjects.push(new Wall(x, y, loader.getResult(grounds[i][j]), this.elementDimension, this.elementDimension));
             break;
           default:
             var groundType = '';
@@ -36,18 +39,20 @@ class LevelSelectionFluffy {
               if(grounds[i][j].prev  == null && (!finishedGames || finishedGames.length === 0)){
                 cursor = 'pointer';
                 color = '#FFAA00';
+                currentY = y;
               }else if(!!finishedGamesMap[grounds[i][j]._id]){
                 color = 'green';
                 cursor = 'pointer';
               } else if(!!finishedGamesMap[grounds[i][j].prev]){
                 cursor = 'pointer';
                 color = '#FFAA00';
+                currentY = y;
               }else{
                 var color = 'grey';
                 var cursor = undefined;
               }
 
-              var txt = this._text(grounds[i][j].levelKey, "bold 20px Arial", (j + 1) * this.elementDimension + this.elementDimension / 2, (i + 1) * this.elementDimension + this.elementDimension / 3, {
+              var txt = this._text(grounds[i][j].levelKey, "bold 20px Arial", x+ this.elementDimension / 2, y + this.elementDimension / 3, {
                 color: color,
                 cursor: cursor
               });
@@ -70,7 +75,7 @@ class LevelSelectionFluffy {
             } else {
               groundType = grounds[i][j];
             }
-            groundObjects.push(new Ground((j + 1) * this.elementDimension, (i + 1) * this.elementDimension, loader.getResult(groundType), this.elementDimension));
+            groundObjects.push(new Ground(x, y, loader.getResult(groundType), this.elementDimension));
             break;
         }
       }
@@ -93,11 +98,15 @@ class LevelSelectionFluffy {
       stage.update();
     }
 
+    console.log(currentY)
+    scroll(20-currentY/20);
+
     document.addEventListener("mousewheel", function (e) {
       var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
       console.log('scroll', delta)
       scroll(delta);
     }, false);
+
     stage.update()
     this.drawTopMenu();
   }

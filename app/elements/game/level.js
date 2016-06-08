@@ -44,6 +44,8 @@ class Game {
     this.player = new Player(this.map.getStartPos().object.x, this.map.getStartPos().object.y, this.map.dimension);
     this.player.addToStage(this.stage);
 
+    this.steps = 0;
+    this.moves = 0;
     this.overlay = new Overlay(this.stage, this.width, this.height, this.player);
 
     this.initialFinishDistance = this.getDistanceToFinish();
@@ -102,6 +104,11 @@ class Game {
     }
     this.map.move(x, y);
     this.overlay.move(x, y);
+    this.steps ++;
+    if(Math.floor(this.steps / 5 )> this.moves){
+      this.moves = this.steps/5;
+      console.log(this.moves , 'moves')
+    }
     this.handleProgress(this.normalizeDistance(this.getDistanceToFinish()));
     this.stage.update();
   }

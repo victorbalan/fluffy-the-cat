@@ -1,4 +1,4 @@
-class Ground extends TexturedGameObject {
+class Ground extends GameObject {
   constructor(x, y, bmp, dimension) {
     super(dimension, dimension);
     this.object = this._square(x, y, bmp, dimension, dimension)
