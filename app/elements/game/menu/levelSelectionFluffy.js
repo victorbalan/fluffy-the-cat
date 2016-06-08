@@ -33,15 +33,19 @@ class LevelSelectionFluffy {
             if (grounds[i][j].groundType) {
               groundType = grounds[i][j].groundType;
               // send these from backend
-              var color = 'grey';
-              var cursor = undefined;
-              if (!!finishedGamesMap[grounds[i][j]._id]) {
-                color = 'green';
-                cursor = 'pointer';
-              } else {
-                lastLevel = grounds[i][j]._id;
+              var color, cursor;
+              if(!finishedGames || finishedGames.length === 0){
                 cursor = 'pointer';
                 color = '#FFAA00';
+              }else if(!!finishedGamesMap[grounds[i][j]._id]){
+                color = 'green';
+                cursor = 'pointer';
+              } else if(!!finishedGamesMap[grounds[i][j].prev]){
+                cursor = 'pointer';
+                color = '#FFAA00';
+              }else{
+                var color = 'grey';
+                var cursor = undefined;
               }
 
               var txt = this._text(grounds[i][j].levelKey, "bold 20px Arial", (j + 1) * this.elementDimension + this.elementDimension / 2, (i + 1) * this.elementDimension + this.elementDimension / 3, {
