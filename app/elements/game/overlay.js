@@ -7,6 +7,7 @@ class Overlay {
     this.player = {x: pb.x, y: pb.y, width: pb.width, height: pb.height};
     this.player.x = this.player.x + this.player.width / 2;
     this.player.y = this.player.y + this.player.height / 2;
+    this.dimension = this.player.height * 9;
 
     this.updateOverlay();
   }
@@ -34,9 +35,9 @@ class Overlay {
     this.overlay.graphics.beginFill("#000");
     this.overlay.graphics.drawRect(0, 0, this.width, this.height);
 
-    this.overlay.graphics.arc(this.player.x, this.player.y, this.height / 2, 0, Math.PI * 2, true).closePath();
-    this.overlay.graphics.beginRadialGradientFill(["transparent", "#000"], [0, 1], this.player.x, this.player.y, 1, this.player.x, this.player.y, this.height / 3)
-      .arc(this.player.x, this.player.y, this.height / 2, 0, Math.PI * 2, true).closePath();
+    this.overlay.graphics.arc(this.player.x, this.player.y, this.dimension, 0, Math.PI * 2, true).closePath();
+    this.overlay.graphics.beginRadialGradientFill(["transparent", "#000"], [0.5, 1], this.player.x, this.player.y, 1, this.player.x, this.player.y, this.dimension/2)
+      .arc(this.player.x, this.player.y, this.dimension + 5, 0, Math.PI * 2, true).closePath();
     this.stage.addChild(this.overlay);
   }
 }
