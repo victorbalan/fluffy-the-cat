@@ -13,7 +13,8 @@
       method="PUT"
       url="[[baseUrl]]/levels/[[id]]/start"
       handle-as="json"
-      last-response="{{data}}">
+      last-response="{{data}}"
+      on-error="onError">
     </iron-ajax>
   </template>
   <script type="application/javascript" src="../../../scripts/behaviors/general-provider-behavior.js"></script>
@@ -26,6 +27,9 @@
       refresh: function () {
         this.refreshToken();
         this.$.request.generateRequest();
+      },
+      onError: function(){
+        alert('You must complete the level before to start this one');
       }
     });
   </script>
