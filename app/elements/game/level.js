@@ -40,6 +40,7 @@ class Game {
   }
 
   start() {
+    this.finished = false;
     this.map.addToStage(this.stage);
     this.player = new Player(this.map.getStartPos().object.x, this.map.getStartPos().object.y, this.map.dimension);
     this.player.addToStage(this.stage);
@@ -66,6 +67,9 @@ class Game {
   }
 
   keyPressed(event) {
+    if(this.finished){
+      return;
+    }
     var x = 0, y = 0;
     switch (event.keyCode) {
       case KEYCODE_LEFT:
@@ -98,6 +102,7 @@ class Game {
       case 'collision':
         return;
       case 'finish':
+        this.finished = true;
         this.onFinish();
         console.log('ggwp');
         break;
