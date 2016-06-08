@@ -41,7 +41,6 @@ class GameObject {
   }
   
   moveTo(x, y) {
-    var b = this.getBounds();
     this.object.x = x;
     this.object.y = y;
   }

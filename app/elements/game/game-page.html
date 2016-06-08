@@ -4,6 +4,7 @@
 <link rel="import" href="providers/levels-by-category-provider.html">
 <link rel="import" href="providers/level-by-id-provider.html">
 <link rel="import" href="providers/categories-provider.html">
+<link rel="import" href="providers/levels-map-provider.html">
 <link rel="import" href="providers/my-games-provider.html">
 <link rel="import" href="requests/start-level-request.html">
 <link rel="import" href="requests/finish-game-request.html">
@@ -23,6 +24,7 @@
         background: #211E27;
       }
     </style>
+    <levels-map-provider data="{{levelsMap}}"></levels-map-provider>
     <categories-provider data="{{categories}}"></categories-provider>
     <my-games-provider data="{{finishedGames}}"></my-games-provider>
     <levels-by-category-provider category="[[categoryId]]" data="{{levels}}"></levels-by-category-provider>
@@ -66,7 +68,7 @@
         },
         observers: [
           '_levelChanged(level)',
-          '_canLoadLevelSelectionMenu(levels, finishedGames)',
+          '_canLoadLevelSelectionMenu(levelsMap, finishedGames)',
           '_canLoadMenu(categories, assetsLoaded)'
         ],
         refresh: function(){
@@ -108,6 +110,7 @@
           this.assetLoader.loadManifest(manifest, true);
           this.height = Math.floor(window.innerHeight / 100) * 100;
           this.width = Math.floor(window.innerWidth / 100) * 100;
+          this.$$('levels-map-provider').refresh();
           var element = this;
           window.addEventListener('keydown', function (e) {
             if (e.keyCode !== 8) {
@@ -129,13 +132,17 @@
           }
           this.newgame(JSON.parse(level.map));
         },
-        _canLoadLevelSelectionMenu: function (levels) {
-          if (!levels || levels.length === 0) {
+        _canLoadLevelSelectionMenu: function (levelsMap, finishedGame) {
+          if (!levelsMap || levelsMap.length === 0) {
             return;
+          }
+          if (!finishedGame || finishedGame.length === 0) {
+            alert('Tutorial now');
           }
           this.showLevelSelection();
         },
         _canLoadMenu: function (categories, assetsLoaded) {
+          console.log('menu')
           if (!categories || categories.length === 0 || !assetsLoaded) {
             return;
           }
@@ -159,7 +166,7 @@
           new CategorySelection(this.stage, this.width, this.height, this.categories, this.assetLoader, function (categoryId) {
             element.clearStage();
             if(element.categoryId === categoryId){
-              element._canLoadLevelSelectionMenu(element.levels, element.finishedGames);
+              element._canLoadLevelSelectionMenu(element.levelsMap, element.finishedGames);
               return;
             }
             element.categoryId = categoryId;
@@ -169,7 +176,7 @@
           this.currentMenu = 'levelSelection';
           this.clearStage();
           var element = this;
-          new LevelSelectionFluffy(this.stage, this.width, this.height, this.levels, this.assetLoader, this.finishedGames, function (levelId) {
+          new LevelSelectionFluffy(this.stage, this.width, this.height, this.levelsMap, this.assetLoader, this.finishedGames, function (levelId) {
             element.levelId = levelId;
             element.$$('start-level-request').refresh();
           });

@@ -13,6 +13,7 @@ class LevelMap {
     }
     var starti = 0;
     var startj = 0;
+    // todo encode start and finish in the level
     for (var i = 0; i < level.length; i++) {
       for (var j = 0; j < level[i].length; j++) {
         if (level[i][j] === 's') {
@@ -99,7 +100,7 @@ class LevelMap {
   getStartPos() {
     return this.start;
   }
-  
+
   printMatrix(m) {
     var line = '';
     for (var i = 0; i < m.length; i++) {
