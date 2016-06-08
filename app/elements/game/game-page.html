@@ -134,7 +134,7 @@
           if (!level) {
             return;
           }
-          this.newgame(JSON.parse(level.map));
+          this.newgame(level.map);
         },
         _canLoadLevelSelectionMenu: function (levelsMap, finishedGame) {
           if (!levelsMap || levelsMap.length === 0) {

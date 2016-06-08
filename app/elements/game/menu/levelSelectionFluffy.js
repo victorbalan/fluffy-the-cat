@@ -3,7 +3,6 @@ class LevelSelectionFluffy {
   constructor(stage, width, height, grounds, loader, finishedGames, onLevelSelect) {
     stage.enableMouseOver(10);
     var self = this;
-    console.log(finishedGames);
     var finishedGamesMap = {};
     for (var i = 0; i < finishedGames.length; i++) {
       finishedGamesMap[finishedGames[i].level] = 'ok';
@@ -34,7 +33,7 @@ class LevelSelectionFluffy {
               groundType = grounds[i][j].groundType;
               // send these from backend
               var color, cursor;
-              if(!finishedGames || finishedGames.length === 0){
+              if(grounds[i][j].prev  == null && (!finishedGames || finishedGames.length === 0)){
                 cursor = 'pointer';
                 color = '#FFAA00';
               }else if(!!finishedGamesMap[grounds[i][j]._id]){
