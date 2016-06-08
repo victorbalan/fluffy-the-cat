@@ -107,6 +107,15 @@ class LevelSelectionFluffy {
       scroll(delta);
     }, false);
 
+    if(this.width > this.height){
+      for (var i = 0; i < groundObjects.length; i++) {
+        groundObjects[i].object.x += (this.width - this.height) / 2 - this.elementDimension / 2;
+      }
+      for (var i = 0; i < textObjects.length; i++) {
+        textObjects[i].x += (this.width - this.height) / 2 - this.elementDimension / 2;
+      }
+    }
+
     stage.update()
     this.drawTopMenu();
   }
@@ -116,7 +125,7 @@ class LevelSelectionFluffy {
     var self = this;
     this.stage.addChild(bar);
     var color = '#FFAA00';
-    var instructions = this._text('Instructions', "bold 20px Arial", 5, 5, {
+    var instructions = this._text('Instructions', "bold 20px Arial", this.width/2 - 150, 5, {
       color: color,
       cursor: 'pointer'
     });
@@ -133,7 +142,7 @@ class LevelSelectionFluffy {
       alert('Instructions')
     });
     this.stage.addChild(instructions);
-    var tutorial = this._text('Tutorial', "bold 20px Arial", 200, 5, {
+    var tutorial = this._text('Tutorial', "bold 20px Arial", this.width/2 + 50, 5, {
       color: color,
       cursor: 'pointer'
     });
