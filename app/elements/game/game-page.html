@@ -2,7 +2,6 @@
 <link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
-<link rel="import" href="providers/levels-by-category-provider.html">
 <link rel="import" href="providers/level-by-id-provider.html">
 <link rel="import" href="providers/levels-map-provider.html">
 <link rel="import" href="providers/my-games-provider.html">
@@ -26,7 +25,6 @@
     </style>
     <levels-map-provider data="{{levelsMap}}"></levels-map-provider>
     <my-games-provider data="{{finishedGames}}"></my-games-provider>
-    <levels-by-category-provider category="[[categoryId]]" data="{{levels}}"></levels-by-category-provider>
     <start-level-request id="[[levelId]]" data="{{startedGame}}"></start-level-request>
     <finish-game-request id="[[startedGame._id]]" on-game-finished="_gameFinished"></finish-game-request>
     <level-by-id-provider id="[[startedGame.level]]" data="{{level}}"></level-by-id-provider>
@@ -41,7 +39,6 @@
   <script src="torch.js"></script>
   <script src="menu/levelSelectionFluffy.js"></script>
   <script src="model/gameobject.js"></script>
-  <script src="model/texturedgameobject.js"></script>
   <script src="model/finish.js"></script>
   <script src="model/ground.js"></script>
   <script src="model/player.js"></script>

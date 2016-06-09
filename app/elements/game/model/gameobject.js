@@ -23,22 +23,6 @@ class GameObject {
   addEventListener(event, listener) {
     this.object.addEventListener(event, listener);
   }
-
-  _square(x, y, color, width, height) {
-    var square = new createjs.Shape();
-    square.graphics.beginFill(color).drawRect(0, 0, width, height);
-    square.x = x;
-    square.y = y;
-    return square;
-  }
-
-  _squareWithBitmapFill(x, y, bmp, width, height) {
-    var square = new createjs.Shape();
-    square.graphics.beginBitmapFill(bmp).drawRect(0, 0, width, height);
-    square.x = x;
-    square.y = y;
-    return square;
-  }
   
   moveTo(x, y) {
     this.object.x = x;

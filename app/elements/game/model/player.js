@@ -1,12 +1,13 @@
 class Player extends GameObject {
   constructor(x, y, dimension) {
-    super(dimension / 2, dimension / 2);
-    this.object = this._square(x, y, 'DeepSkyBlue', dimension / 2, dimension / 2)
+    dimension = dimension / 2;
+    super(dimension, dimension);
+    this.object = this.cat(x, y, dimension)
     this.animationState = '';
-    this.setBounds({x: x, y: y, width: dimension / 2, height: dimension / 2});
+    this.setBounds({x: x, y: y, width: dimension, height: dimension});
   }
 
-  _square(x, y, color, dimension) {
+  cat(x, y, dimension) {
     var simple = {
       stand: [24],
       right: [24, 26],
@@ -31,14 +32,15 @@ class Player extends GameObject {
     var spriteSheet = new createjs.SpriteSheet(data);
     var animation = new createjs.Sprite(spriteSheet);
     animation.x = x;
-    animation.y = y;
-    animation.gotoAndPlay('up');
+    animation.y = y ;
+    animation.gotoAndPlay('stand');
 
     animation.scaleX = dimension/31.6;
     animation.scaleY = dimension/32;
 
     return animation;
   }
+
   stand() {
     this.goToAndPlay('stand');
   }
