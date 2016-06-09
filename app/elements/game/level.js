@@ -39,9 +39,9 @@ class Game {
     createjs.Ticker.useRAF = true;
     this.firstKey = null;
     var self = this;
-    createjs.Ticker.addEventListener("tick", function(){
+    createjs.Ticker.addEventListener("tick", function(event){
       self.keyPressed()
-      stage.update();
+      stage.update(event);
     });
     this.registerEvents();
   }
