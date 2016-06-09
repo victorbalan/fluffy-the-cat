@@ -32,6 +32,7 @@
     <level-by-id-provider id="[[startedGame.level]]" data="{{level}}"></level-by-id-provider>
     <login-service on-logged-in="refresh"></login-service>
     <paper-progress indeterminate style="position: fixed; top:0;"></paper-progress>
+
     <canvas id="demoCanvas" width="[[width]]" height="[[height]]" tabindex="1" ></canvas>
   </template>
   <script src="levelmap.js"></script>
@@ -125,8 +126,10 @@
         ready: function () {
           this._loadAssets();
           this._registerEvents();
-          this.height = Math.floor(window.innerHeight / 100) * 100;
-          this.width = Math.floor(window.innerWidth / 100) * 100;
+//          this.height = Math.floor(window.innerHeight / 100) * 100;
+//          this.width = Math.floor(window.innerWidth / 100) * 100;
+          this.height = window.innerHeight - 4;
+          this.width = window.innerWidth;
           this.$$('paper-progress').style.width = this.width + 'px';
         },
         _gameFinished: function(){
