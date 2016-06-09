@@ -18,7 +18,7 @@ class Game {
   constructor(stage, width, height, assetLoader, onFinishCallback) {
     // NOTE 2.5% would fit perfectly but the map would flicker.
     // TODO - solve
-    this.speed = 2 * height / 100;
+    this.speed = height / 100;
     this.stage = stage;
     this.godmode = false;
     this.godmode = false;
@@ -27,6 +27,22 @@ class Game {
     // TODO - fire event
     this.onFinish = onFinishCallback;
     this.assetLoader = assetLoader;
+    this.keysPressed = {
+      37: 0,
+      39: 0,
+      40: 0,
+      38: 0
+    };
+    stage.enableMouseOver(30);
+    createjs.Touch.enable(stage);
+    createjs.Ticker.setFPS(50);
+    createjs.Ticker.useRAF = true;
+    this.firstKey = null;
+    var self = this;
+    createjs.Ticker.addEventListener("tick", function(){
+      self.keyPressed()
+      stage.update();
+    });
     this.registerEvents();
   }
 
@@ -37,12 +53,14 @@ class Game {
     this.map = new LevelMap(level, this.width, this.height, this.assetLoader);
     this.start();
     this.loader = new createjs.Shape();
+    this.progress = new createjs.Shape();
   }
 
   start() {
     this.finished = false;
     this.map.addToStage(this.stage);
     this.player = new Player(this.map.getStartPos().object.x, this.map.getStartPos().object.y, this.map.dimension);
+    this.player.stand();
     this.player.addToStage(this.stage);
 
     this.steps = 0;
@@ -60,98 +78,126 @@ class Game {
 
   registerEvents() {
     (() => {
-      document.addEventListener('keydown', (event) => {
-        this.keyPressed(event);
+      document.addEventListener('keydown', (e) => {
+        if(!(e.keyCode === KEYCODE_G ||
+          e.keyCode === KEYCODE_LEFT ||
+          e.keyCode === KEYCODE_RIGHT ||
+          e.keyCode === KEYCODE_UP ||
+          e.keyCode === KEYCODE_DOWN)){
+          console.log('return')
+          return;
+        }
+        e.preventDefault();
+        if(e.keyCode === KEYCODE_G) {
+          this.godMode();
+          return;
+        }
+        this.keysPressed[e.keyCode] = 1;
+        if (!this.firstKey) { this.firstKey = e.keyCode; }
+      })
+      document.addEventListener('keyup', (e) => {
+        if(!(e.keyCode !== KEYCODE_G ||
+          e.keyCode !== KEYCODE_LEFT ||
+          e.keyCode !== KEYCODE_RIGHT ||
+          e.keyCode !== KEYCODE_UP ||
+          e.keyCode !== KEYCODE_DOWN)){
+          return;
+        }
+        e.preventDefault();
+        this.keysPressed[e.keyCode] = 0;
+        if (this.firstKey === e.keyCode) { this.firstKey = null; }
+        if (this.player) { this.player.stand(); }
       })
     })();
   }
 
-  keyPressed(event) {
+  keyPressed() {
     if(this.finished){
       return;
     }
-    var x = 0, y = 0;
-    switch (event.keyCode) {
-      case KEYCODE_LEFT:
-        x = this.speed;
-        this.player.goToAndPlay('left');
-        break;
-      case KEYCODE_RIGHT:
-        x = -this.speed;
-        this.player.goToAndPlay('right');
-        break;
-      case KEYCODE_UP:
-        y = this.speed;
-        this.player.goToAndPlay('up');
-        break;
-      case KEYCODE_DOWN:
-        y = -this.speed;
-        this.player.goToAndPlay('down');
-        break;
-      case KEYCODE_G:
-        this.godMode();
-        return;
-      default:
-        return;
+    var isMoving = this.keysPressed[37] === 1 ||
+      this.keysPressed[38] === 1 || this.keysPressed[39] === 1 || this.keysPressed[40] === 1;
+
+    if(!isMoving){
+      return;
     }
-    event.preventDefault();
+    var toPlay = {x: [], y: []};
+    var x = 0, y = 0;
+    if(this.keysPressed[KEYCODE_LEFT] === 1){
+      x += this.speed;
+      toPlay.x.push('left');
+    }
+    if(this.keysPressed[KEYCODE_RIGHT] === 1){
+      x += -this.speed;
+      toPlay.x.push('right');
+    }
+    if(this.keysPressed[KEYCODE_UP] === 1){
+      y += this.speed;
+      toPlay.y.push('up');
+    }
+    if(this.keysPressed[KEYCODE_DOWN] === 1){
+      y += -this.speed;
+      toPlay.y.push('down');
+    }
     var bounds = this.player.getBounds();
     bounds.x = bounds.x - x;
-    bounds.y = bounds.y - y;
     switch (this.map.getIntersectionType(bounds)) {
       case 'collision':
-        return;
+        x = 0;
+        toPlay.x = [];
+        break;
       case 'finish':
         this.finished = true;
         this.onFinish();
         console.log('ggwp');
         break;
     }
+    var bounds = this.player.getBounds();
+    bounds.y = bounds.y - y;
+    switch (this.map.getIntersectionType(bounds)) {
+      case 'collision':
+        y = 0;
+        toPlay.y = [];
+        break;
+      case 'finish':
+        this.finished = true;
+        this.onFinish();
+        console.log('ggwp');
+        break;
+    }
+    var toPlayValue = '';
+    if(toPlay.x.length > 0){
+      toPlayValue = toPlay.x[0]
+    }else{
+      toPlayValue = toPlay.y[0]
+    }
+    this.player.goToAndPlay(toPlayValue);
+
+    if(x ===0 && y === 0 ){
+      this.player.stand();
+      return;
+    }
     this.map.move(x, y);
     this.overlay.move(x, y);
     this.steps ++;
     if(Math.floor(this.steps / 5 )> this.moves){
       this.moves = this.steps/5;
-      console.log(this.moves , 'moves')
+      // console.log(this.moves , 'moves')
     }
-    this.handleProgress(this.normalizeDistance(this.getDistanceToFinish()));
-    this.stage.update();
+    this.coldHot();
+    // this.stage.update();
   }
 
-  handleProgress(distance) {
-    var percentFade = Math.round(100 - (distance * 100) / 255) / 100;
-    if (percentFade < 0)
-      percentFade = 0;
+  coldHot(){
+    var percent = (100 - this.getDistanceToFinish() * 100 / this.initialFinishDistance)/ 100;
+    if (percent <= 0)
+      percent = 0.01;
 
-    var style = this.extractColorForProgress(percentFade);
-    if (!!this.loader) {
-      this.stage.removeChild(this.loader)
-    }
-
-    // TODO: workaround to 'refresh' the progress bar
-    this.loader.graphics.beginFill("#000000").setStrokeStyle(3).beginStroke("rgba(0,0,0, 1)")
-      .drawRect(0, 0, this.width, 30);
-
-    this.loader.x = 50;
-    this.loader.graphics.beginFill(style).setStrokeStyle(3).beginStroke(style)
-      .drawRect(0, 0, (percentFade * 100) * this.width / 100, 30);
-    this.stage.addChild(this.loader);
-  }
-
-  extractColorForProgress(percentFade) {
-    var diffRed = endColor.r - startColor.r;
-    var diffGreen = endColor.g - startColor.g;
-    var diffBlue = endColor.b - startColor.b;
-
-    diffRed = Math.round(Math.abs((diffRed * percentFade) + startColor.r));
-    diffGreen = Math.round(Math.abs((diffGreen * percentFade) + startColor.g));
-    diffBlue = Math.round(Math.abs((diffBlue * percentFade) + startColor.b));
-
-    return `rgba(${diffRed},${diffGreen},${diffBlue},1)`;
-  }
-
-  normalizeDistance(distance) {
-    return (distance * 255) / this.initialFinishDistance;
+    this.progress.graphics.beginRadialGradientFill(["#ff6600","#0066ff"], [0, 1], 0, 0, 0, 0, 0, 65 * percent).
+    setStrokeStyle(1).beginStroke("#0066ff").drawCircle(0, 0, 40);
+    this.progress.x = this.width/2 - 40;
+    this.progress.y = 50;
+    this.stage.addChild(this.progress);
   }
 
   getDistanceToFinish() {

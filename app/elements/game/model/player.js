@@ -39,6 +39,9 @@ class Player extends GameObject {
 
     return animation;
   }
+  stand() {
+    this.goToAndPlay('stand');
+  }
 
   goToAndPlay(a) {
     if (a === this.animationState) {
