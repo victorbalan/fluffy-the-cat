@@ -5,6 +5,7 @@ class Finish extends GameObject {
     this.object.graphics.beginFill('red').drawRect(0, 0, dimension, dimension);
     this.object.x = x;
     this.object.y = y;
+    this.collisionType = 'finish';
   }
 
   getIntersectionType(rect1) {

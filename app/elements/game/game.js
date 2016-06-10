@@ -28,28 +28,28 @@ class Game {
     var self = this;
     createjs.Ticker.addEventListener("tick", function (event) {
       self.checkPlayerMovement();
-      self.coldHot();
+      // self.coldHot();
       stage.update(event);
     });
   }
 
   start(level) {
     this.stage.removeAllChildren();
-    this.loader = new createjs.Shape();
-    this.progress = new createjs.Shape();
+    // this.loader = new createjs.Shape();
+    // this.progress = new createjs.Shape();
 
     this.map = new LevelMap(level, this.gameConfig, this.mapCreator);
-    this.finished = false;
+    // this.finished = false;
     this.map.addToStage(this.stage);
-    this.player = new Player(this.map.start.object.x, this.map.start.object.y, this.gameConfig.tileDimension);
+    this.player = new Player(this.map.startPos.x, this.map.startPos.y, this.gameConfig.tileDimension);
     this.player.stand();
     this.player.addToStage(this.stage);
 
-    this.steps = 0;
-    this.moves = 0;
+    // this.steps = 0;
+    // this.moves = 0;
     this.overlay = new Overlay(this.stage, this.gameConfig, this.player);
 
-    this.initialFinishDistance = this.getDistanceToFinish();
+    // this.initialFinishDistance = this.getDistanceToFinish();
   }
 
   clear() {
@@ -111,7 +111,7 @@ class Game {
 
     // TODO: end refactor
     this.map.move(x, y);
-    this.overlay.move(x, y);
+    // this.overlay.move(x, y);
     this.steps++;
     if (Math.floor(this.steps / 5) > this.moves) {
       this.moves = this.steps / 5;

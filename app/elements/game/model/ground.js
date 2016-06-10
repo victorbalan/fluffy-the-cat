@@ -12,6 +12,7 @@ class Ground extends GameObject {
     }
     this.object.x = x;
     this.object.y = y;
+    this.collisionType = 'none';
   }
 
   getIntersectionType(rect1) {

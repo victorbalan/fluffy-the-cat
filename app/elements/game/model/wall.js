@@ -1,4 +1,5 @@
 class Wall extends GameObject {
+
   constructor(x, y, bmp, width, height) {
     super(width, height);
     this.object = new createjs.Shape();
@@ -12,6 +13,7 @@ class Wall extends GameObject {
     }
     this.object.x = x;
     this.object.y = y;
+    this.collisionType = 'collision';
   }
 
   getIntersectionType(rect1) {
