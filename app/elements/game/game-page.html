@@ -34,12 +34,12 @@
     <canvas id="demoCanvas" width="[[width]]" height="[[height]]" tabindex="1" ></canvas>
   </template>
   <script src="map/levelmap.js"></script>
-  <script src="game.js"></script>
+  <script src="level.js"></script>
   <script src="overlay.js"></script>
   <script src="torch.js"></script>
+  <script src="main.js"></script>
   <script src="menu/levelSelectionFluffy.js"></script>
   <script src="model/gameobject.js"></script>
-  <script src="model/finish.js"></script>
   <script src="model/ground.js"></script>
   <script src="model/player.js"></script>
   <script src="model/wall.js"></script>
@@ -57,10 +57,7 @@
         is: 'game-page',
         properties: {
           currentMenu: {
-            value: 'play'
-          },
-          distanceGradient: {
-            value: 'background-color:rgba(64,58,62,1)'
+            value: 'levelSelection'
           }
         },
         observers: [
@@ -68,6 +65,12 @@
           '_levelChanged(level)',
           '_canLoadLevelSelectionMenu(levelsMap, finishedGames, assetsLoaded)'
         ],
+        listeners: {
+          'test-event': 'testEv'
+        },
+        testEv: function(){
+          console.log('wohoo  ')
+        },
         showProgress: function(){
           this.$$('paper-progress').style.display = '';
         },
@@ -121,6 +124,15 @@
         },
         _assetsLoaded: function(){
           this.stage = new createjs.Stage(this.$.demoCanvas);
+          var element = this;
+          var onFinishCallback = function () {
+            this.showProgress();
+            this.$$('finish-game-request').refresh();
+          }.bind(this);
+          var control = {
+            onLevelFinished: onFinishCallback
+          };
+          this.main = new Main(this.stage, this.width, this.height, this.assetLoader, control);
           this.$.demoCanvas.focus();
         },
         refresh: function(){
@@ -161,9 +173,8 @@
         showLevelSelection: function () {
           this.hideProgress();
           this.currentMenu = 'levelSelection';
-          this.clearStage();
           var element = this;
-          new LevelSelectionFluffy(this.stage, this.width, this.height, this.levelsMap, this.assetLoader, this.finishedGames, function (levelId) {
+          this.main.showLevelSelection(this.levelsMap, this.finishedGames, function (levelId) {
             element.showProgress();
             element.levelId = levelId;
             element.$$('start-level-request').refresh();
@@ -179,24 +190,9 @@
           }
         },
         newgame: function (level) {
-          if (!this.game) {
-            var element = this;
-            var onFinishCallback = function () {
-              element.showProgress();
-              element.$$('finish-game-request').refresh();
-            };
-            this.game = new Game(this.stage, this.width, this.height, this.assetLoader, onFinishCallback);
-          }
+          this.main.start(level);
           this.hideProgress();
           this.currentMenu = 'game';
-          this.game.start(level);
-        },
-        clearStage: function () {
-          if(!this.stage){
-            return console.log('stage is not available for clearing.');
-          }
-          this.stage.removeAllChildren();
-          this.stage.update();
         }
       });
     })();

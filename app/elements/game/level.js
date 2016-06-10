@@ -1,21 +1,14 @@
 
-class Game {
-  constructor(stage, width, height, assetLoader, onFinishCallback) {
+class Level {
+  constructor(stage, gameConfig, assetLoader, onFinishCallback) {
     this.inputProcessor = new InputProcessor(this);
     this.assetLoader = assetLoader;
     this.mapCreator = new MapCreator(assetLoader);
     this.stage = stage;
-    this.godmode = false;
 
     // TODO - fire event
     this.onFinish = onFinishCallback;
-
-    this.gameConfig = {
-      width: width,
-      height: height,
-      tileDimension: Math.min(width, height) / 8
-    };
-    this.gameConfig.speed = this.gameConfig.tileDimension / 10;
+    this.gameConfig = gameConfig;
 
     this.initCreateJs(stage);
   }
@@ -34,6 +27,7 @@ class Game {
   }
 
   start(level) {
+    this.godmode = false;
     this.stage.removeAllChildren();
     // this.loader = new createjs.Shape();
     // this.progress = new createjs.Shape();
