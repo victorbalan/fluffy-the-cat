@@ -4,7 +4,10 @@ class Player extends GameObject {
     super(dimension, dimension);
     this.object = this.cat(x, y, dimension)
     this.animationState = '';
+    this.soundPlaying = false;
     this.setBounds({x: x, y: y, width: dimension, height: dimension});
+    // TODO add sounds after optmizations
+    // this.sound = createjs.Sound.play("footstep", {interrupt: createjs.Sound.INTERRUPT_NONE, loop: -1});
   }
 
   cat(x, y, dimension) {
@@ -96,6 +99,16 @@ class Player extends GameObject {
     if (a === this.animationState) {
       return;
     }
+    // TODO add sounds after optmizations
+    // if(a !== 'stand' && !this.soundPlaying) {
+    //   this.soundPlaying = true;
+    //   this.sound.play();
+    // }else{
+    //   console.log('stop')
+    //   // fix standing issue(when fluffy hits a wall it enters stand mode)
+    //   // this.soundPlaying = false;
+    //   // this.sound.stop();
+    // }
     this.animationState = a;
     this.object.gotoAndPlay(a);
   }

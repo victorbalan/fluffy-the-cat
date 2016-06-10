@@ -34,7 +34,7 @@
     <canvas id="demoCanvas" width="[[width]]" height="[[height]]" tabindex="1" ></canvas>
   </template>
   <script src="levelmap.js"></script>
-  <script src="level.js"></script>
+  <script src="game.js"></script>
   <script src="overlay.js"></script>
   <script src="torch.js"></script>
   <script src="menu/levelSelectionFluffy.js"></script>
@@ -43,8 +43,11 @@
   <script src="model/ground.js"></script>
   <script src="model/player.js"></script>
   <script src="model/wall.js"></script>
+  <script src="core/inputProcessor.js"></script>
+  <script src="core/mapCreator.js"></script>
   <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
   <script src="https://code.createjs.com/preloadjs-0.6.2.min.js"></script>
+  <script src="https://code.createjs.com/soundjs-0.6.2.min.js"></script>
   <script>
     (function () {
       'use strict';
@@ -71,6 +74,7 @@
           this.$$('paper-progress').style.display = 'none';
         },
         _loadAssets: function(){
+          createjs.Sound.alternateExtensions = ["mp3"];
           var manifest = [
             {src: "/images/all.png", id: "all"},
             {src: "/images/solo.png", id: "solo"},
@@ -87,15 +91,18 @@
             {src: "/images/tbl.png", id: "tbl"},
             {src: "/images/tbr.png", id: "tbr"},
             {src: "/images/tr.png", id: "tr"},
+            {src: "/images/w.png", id: "w"},
             {src: "/images/ver.png", id: "ver"},
             {src: "/images/wb.png", id: "wb"},
             {src: "/images/test_ground.png", id: "ground"},
             {src: "/images/horizontal_ground.png", id: "horizontal_ground"},
-            {src: "/images/test_wall.png", id: "wall"}
+            {src: "/images/test_wall.png", id: "wall"},
+            {src: "/images/footstep.mp3", id: "footstep"}
           ];
 
           var self = this;
-          this.assetLoader = new createjs.LoadQueue(false);
+          this.assetLoader = new createjs.LoadQueue(true);
+          this.assetLoader.installPlugin(createjs.Sound);
           this.assetLoader.addEventListener("complete", function(){
             self.assetsLoaded = true;
           });
@@ -181,7 +188,7 @@
           }
           this.hideProgress();
           this.currentMenu = 'game';
-          this.game.startLevel(level);
+          this.game.start(level);
         },
         clearStage: function () {
           if(!this.stage){

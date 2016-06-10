@@ -61,6 +61,7 @@ class LevelSelectionFluffy {
                 txt.mainColor = color;
 
                 txt.hitArea = this._hitArea(0, 0, 40, 40);
+
                 txt.addEventListener('mouseover', function (evt) {
                   self._mouseOver(evt, stage);
                 });
@@ -149,12 +150,8 @@ class LevelSelectionFluffy {
     tutorial.mainColor = color;
 
     tutorial.hitArea = this._hitArea(0, 0, 100, 40);
-    tutorial.addEventListener('mouseover', function (evt) {
-      self._mouseOver(evt, self.stage);
-    });
-    tutorial.addEventListener('mouseout', function (evt) {
-      self._mouseOut(evt, self.stage, evt.target.mainColor);
-    });
+    tutorial.addEventListener('mouseover', this._mouseOver.bind(this));
+    tutorial.addEventListener('mouseout', this._mouseOut.bind(this));
     tutorial.addEventListener('click', function (evt) {
       alert('Tutorial')
     });
@@ -209,17 +206,17 @@ class LevelSelectionFluffy {
     return square;
   }
 
-  _mouseOver(evt, stage) {
+  _mouseOver(evt) {
     evt.target.scaleX = 1.3;
     evt.target.scaleY = 1.3;
     evt.target.color = 'red';
-    stage.update();
+    this.stage.update();
   }
 
-  _mouseOut(evt, stage, color) {
+  _mouseOut(evt) {
     evt.target.scaleX = 1;
     evt.target.scaleY = 1;
-    evt.target.color = color;
-    stage.update();
+    evt.target.color = evt.target.mainColor;
+    this.stage.update();
   }
 }

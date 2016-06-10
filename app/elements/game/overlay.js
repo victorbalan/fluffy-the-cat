@@ -1,8 +1,8 @@
 class Overlay {
-  constructor(stage, width, height, p) {
+  constructor(stage, gameConfig, p) {
     this.stage = stage;
-    this.width = width;
-    this.height = height;
+    this.width = gameConfig.width;
+    this.height = gameConfig.height;
     var pb = p.getBounds();
     this.player = {x: pb.x, y: pb.y, width: pb.width, height: pb.height};
     this.player.x = this.player.x + this.player.width / 2;
