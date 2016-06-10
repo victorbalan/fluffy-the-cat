@@ -1,23 +1,20 @@
 class LevelMap {
   constructor(level, gameConfig, mapCreator) {
-    this.canvasHeight = gameConfig.height;
-    this.canvasWidth = gameConfig.width;
-    this.dimension = gameConfig.tileDimension;
-
     this.mapObjects = [];
 
     if (!level || level.length === 0) {
       console.log('level is not ok');
       return;
     }
-    var map = mapCreator.createMap(level, this.dimension);
+    var map = mapCreator.createMap(level, gameConfig.tileDimension);
     this.mapObjects = map.mapObjects;
     this.start = map.start;
     this.finish = map.finish;
     var starti = map.startMatrixPos.i;
     var startj = map.startMatrixPos.j;
-    this.move(Math.floor(this.canvasWidth / this.dimension / 2- startj) * this.dimension + this.dimension / 2,
-      Math.floor(this.canvasHeight / this.dimension / 2- starti) * this.dimension - this.dimension / 2);
+    var xOffset = Math.floor(gameConfig.width / gameConfig.tileDimension / 2- startj) * gameConfig.tileDimension + gameConfig.tileDimension / 2;
+    var yOffset = Math.floor(gameConfig.height / gameConfig.tileDimension / 2- starti) * gameConfig.tileDimension - gameConfig.tileDimension / 2
+    this.move(xOffset, yOffset);
   }
 
   move(xOfset, yOffset) {

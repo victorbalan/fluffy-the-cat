@@ -16,7 +16,7 @@ class MapCreator {
       finish: {},
       // TODO add boundaries
       boundaries: []
-    }
+    };
     for (var i = 0; i < level.length; i++) {
       for (var j = 0; j < level[i].length; j++) {
         var x = j * dimension;
