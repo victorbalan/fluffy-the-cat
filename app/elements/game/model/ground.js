@@ -1,3 +1,4 @@
+// @deprecated
 class Ground extends GameObject {
   constructor(x, y, bmp, dimension) {
     super(dimension, dimension);

@@ -1,3 +1,4 @@
+// @deprecated
 class Finish extends GameObject {
   constructor(x, y, dimension) {
     super(dimension, dimension);

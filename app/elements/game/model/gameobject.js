@@ -1,3 +1,4 @@
+// @deprecated
 class GameObject {
   constructor(width, height){
     this.width = width;

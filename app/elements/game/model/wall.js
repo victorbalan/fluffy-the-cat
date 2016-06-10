@@ -1,3 +1,4 @@
+// @deprecated
 class Wall extends GameObject {
 
   constructor(x, y, bmp, width, height) {
