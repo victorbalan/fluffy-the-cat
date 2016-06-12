@@ -1,7 +1,5 @@
 class LevelMap {
   constructor(level, gameConfig, mapCreator) {
-    this.mapObjects = [];
-
     if (!level || level.length === 0) {
       console.log('level is not ok');
       return;
@@ -19,11 +17,18 @@ class LevelMap {
       x: this.start.x + xOffset,
       y: this.start.y + yOffset
     };
+
+    this.finishPos = {
+      x: this.finish.x + xOffset,
+      y: this.finish.y + yOffset
+    };
     this.move(xOffset, yOffset);
   }
 
   move(xOffset, yOffset) {
     this.map.move(xOffset, yOffset);
+    this.finishPos.x += xOffset;
+    this.finishPos.y += yOffset;
   }
 
 

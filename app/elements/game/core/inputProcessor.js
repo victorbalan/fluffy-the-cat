@@ -5,7 +5,7 @@ const KEYCODE_DOWN = 40;
 const KEYCODE_G = 71;
 
 class InputProcessor {
-  constructor(game) {
+  constructor() {
     this.movementKeysPressed = {
       37: 0,
       39: 0,
@@ -13,7 +13,7 @@ class InputProcessor {
       38: 0
     };
     this.firstMovementKey = null;
-    this.registerEvents(game);
+    this.registerEvents();
   }
 
   getPlayerMovement() {
@@ -42,12 +42,15 @@ class InputProcessor {
     return {x: x, y: y, animation: animation};
   }
 
-  registerEvents(game) {
+  registerEvents() {
+    var self = this;
     document.addEventListener('keydown', (e) => {
-      if (!this.preventIfGameKey(e)){return;}
+      if (!this.preventIfGameKey(e)) {
+        return;
+      }
       if (e.keyCode === KEYCODE_G) {
         // TODO make game an interface than can process any keys except of movement
-        game.godMode();
+        self.parent.godMode();
         return;
       }
       this.movementKeysPressed[e.keyCode] = 1;
@@ -56,22 +59,24 @@ class InputProcessor {
       }
     });
     document.addEventListener('keyup', (e) => {
-      if (!this.preventIfGameKey(e)){return;}
+      if (!this.preventIfGameKey(e)) {
+        return;
+      }
       this.movementKeysPressed[e.keyCode] = 0;
       if (this.firstMovementKey === e.keyCode) {
         this.firstMovementKey = null;
       }
-      if (game.player) {
-        game.player.stand();
+      if (self.parent.player) {
+        self.parent.player.stand();
       }
     })
   }
 
   preventIfGameKey(e) {
-    if (!(e.keyCode !== KEYCODE_G || e.keyCode !== KEYCODE_LEFT || e.keyCode !== KEYCODE_RIGHT || e.keyCode !== KEYCODE_UP || e.keyCode !== KEYCODE_DOWN)) {
-      return false;
+    if (e.keyCode === KEYCODE_G || e.keyCode === KEYCODE_LEFT || e.keyCode === KEYCODE_RIGHT || e.keyCode === KEYCODE_UP || e.keyCode === KEYCODE_DOWN) {
+      e.preventDefault();
+      return true;
     }
-    e.preventDefault();
-    return true;
+    return false;
   }
 }

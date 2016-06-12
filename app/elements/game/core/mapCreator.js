@@ -1,8 +1,8 @@
 class MapCreator {
-  constructor(loader) {
+  constructor(loader, gameObjectCreator) {
     console.log('map creator initialized');
     this.loader = loader;
-    this.gameObjectCreator = new GameObjectCreator();
+    this.gameObjectCreator = gameObjectCreator;
   }
 
   createMap(level, dimension) {

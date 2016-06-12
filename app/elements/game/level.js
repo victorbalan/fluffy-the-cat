@@ -1,49 +1,41 @@
 
 class Level {
-  constructor(stage, gameConfig, assetLoader, onFinishCallback) {
-    this.inputProcessor = new InputProcessor(this);
-    this.assetLoader = assetLoader;
-    this.mapCreator = new MapCreator(assetLoader);
+  constructor(stage, gameConfig, inputProcessor, mapCreator, onFinishCallback) {
+    this.inputProcessor = inputProcessor;
+    this.mapCreator = mapCreator;
     this.stage = stage;
 
     // TODO - fire event
     this.onFinish = onFinishCallback;
     this.gameConfig = gameConfig;
 
-    this.initCreateJs(stage);
   }
 
-  initCreateJs(stage){
-    stage.enableMouseOver(30);
-    createjs.Touch.enable(stage);
-    createjs.Ticker.setFPS(50);
-    createjs.Ticker.useRAF = true;
-    var self = this;
-    createjs.Ticker.addEventListener("tick", function (event) {
-      self.checkPlayerMovement();
-      // self.coldHot();
-      stage.update(event);
-    });
+  tickListener(event){
+    this.checkPlayerMovement();
+    this.coldHot();
+    this.stage.update(event);
   }
 
   start(level) {
     this.godmode = false;
-    this.stage.removeAllChildren();
-    // this.loader = new createjs.Shape();
-    // this.progress = new createjs.Shape();
 
     this.map = new LevelMap(level, this.gameConfig, this.mapCreator);
-    // this.finished = false;
+    this.finished = false;
     this.map.addToStage(this.stage);
     this.player = new Player(this.map.startPos.x, this.map.startPos.y, this.gameConfig.tileDimension);
     this.player.stand();
     this.player.addToStage(this.stage);
 
-    // this.steps = 0;
-    // this.moves = 0;
+    this.steps = 0;
+    this.moves = 0;
     this.overlay = new Overlay(this.stage, this.gameConfig, this.player);
 
-    // this.initialFinishDistance = this.getDistanceToFinish();
+    this.initialFinishDistance = this.getDistanceToFinish();
+    this.progress = new createjs.Shape();
+    this.progress.x = this.gameConfig.width / 2 - 40;
+    this.progress.y = 50;
+    this.stage.addChild(this.progress);
   }
 
   clear() {
@@ -117,15 +109,18 @@ class Level {
     var percent = (100 - this.getDistanceToFinish() * 100 / this.initialFinishDistance) / 100;
     if (percent <= 0)
       percent = 0.01;
+    // TODO: this makes the game laggy
+    // TODO: fix
 
+    if(percent === this.percent){
+      return;
+    }
+    this.percent = percent;
     this.progress.graphics.beginRadialGradientFill(["#ff6600", "#0066ff"], [0, 1], 0, 0, 0, 0, 0, 65 * percent).setStrokeStyle(1).beginStroke("#0066ff").drawCircle(0, 0, 40);
-    this.progress.x = this.gameConfig.width / 2 - 40;
-    this.progress.y = 50;
-    this.stage.addChild(this.progress);
   }
 
   getDistanceToFinish() {
-    var finish = this.map.finish.getBounds();
+    var finish = this.map.finishPos;
     var playerBounds = this.player.getBounds();
 
     var finishX = finish.x, finishY = finish.y;

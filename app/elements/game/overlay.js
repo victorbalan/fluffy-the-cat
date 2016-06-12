@@ -9,6 +9,15 @@ class Overlay {
     this.player.y = this.player.y + this.player.height / 2;
     this.dimension = this.player.height * 9;
 
+    this.bigOverlay = new createjs.Shape();
+    this.bigOverlay.graphics.beginFill("#000");
+    this.bigOverlay.graphics.drawRect(0, 0, this.width, this.height);
+
+    this.bigOverlay.graphics.arc(this.player.x, this.player.y, this.dimension * 2, 0, Math.PI * 2, true).closePath();
+    this.bigOverlay.graphics.beginRadialGradientFill(["transparent", "#000"], [0.5, 1], this.player.x, this.player.y, 1, this.player.x, this.player.y, this.dimension)
+      .arc(this.player.x, this.player.y, this.dimension * 2 + 5, 0, Math.PI * 2, true).closePath();
+    this.stage.addChild(this.bigOverlay);
+
     this.updateOverlay();
     this.overlay.cache(0, 0, this.width, this.height);
   }
