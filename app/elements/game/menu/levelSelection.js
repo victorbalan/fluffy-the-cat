@@ -29,7 +29,8 @@ class LevelSelectionFluffy {
 
     this.player = new Player(this.gameConfig.width / 2, this.gameConfig.height / 2, this.gameConfig.tileDimension);
     this.player.stand();
-    this.player.addToStage(this.stage);
+    // TODO: add player after more explicit explanation on how to use it
+    // this.player.addToStage(this.stage);
 
     this.move(x, y);
 
@@ -49,18 +50,18 @@ class LevelSelectionFluffy {
     if (!playerMovement) {
       return;
     }
+    // TODO: add player after more explicit explanation on how to use it
+    // var moveInfo = this.map.map.getMaxMoveWithIntersectionType(this.player.getBounds(), -playerMovement.x * this.gameConfig.speed, -playerMovement.y * this.gameConfig.speed);
+    // var x = -moveInfo.max.x;
+    // var y = -moveInfo.max.y;
+    // this.player.goToAndPlay(playerMovement.animation);
+    //
+    // if (x === 0 && y === 0) {
+    //   this.player.stand();
+    //   return;
+    // }
 
-    var moveInfo = this.map.map.getMaxMoveWithIntersectionType(this.player.getBounds(), -playerMovement.x * this.gameConfig.speed, -playerMovement.y * this.gameConfig.speed);
-    var x = -moveInfo.max.x;
-    var y = -moveInfo.max.y;
-    this.player.goToAndPlay(playerMovement.animation);
-
-    if (x === 0 && y === 0) {
-      this.player.stand();
-      return;
-    }
-
-    this.move(x, y);
+    this.move(playerMovement.x * 2 * this.gameConfig.speed, playerMovement.y * 2 * this.gameConfig.speed  );
   }
 
   move(x, y) {
