@@ -16,7 +16,11 @@ class Main {
     this.initCreateJs(stage);
 
     this.currentLevel = new Level(this.stage, this.gameConfig, this.inputProcessor, this.mapCreator, parent.onLevelFinished);
-    this.levelSelection = new LevelSelectionFluffy(this.stage, this.gameConfig, this.inputProcessor, this.mapCreator);
+    var self = this;
+    this.tutorial = new Tutorial(this.stage, this.gameConfig, this.inputProcessor, this.mapCreator, parent.onTutorialFinished);
+    this.levelSelection = new LevelSelectionFluffy(this.stage, this.gameConfig, this.inputProcessor, this.mapCreator, function(){
+      self.startTutorial();
+    });
   }
 
   showLevelSelection(levelsMap, finishedGames, onLevelSelectCallback){
@@ -33,6 +37,14 @@ class Main {
     this.stage.removeAllChildren();
     this.inputProcessor.parent = this.currentLevel;
     this.currentLevel.start(level);
+  }
+
+  startTutorial(){
+    createjs.Ticker.removeAllEventListeners('tick');
+    createjs.Ticker.addEventListener('tick', this.tutorial.tickListener.bind(this.tutorial));
+    this.stage.removeAllChildren();
+    this.inputProcessor.parent = this.tutorial;
+    this.tutorial.start();
   }
 
   initCreateJs(stage) {

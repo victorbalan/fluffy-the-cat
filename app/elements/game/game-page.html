@@ -35,6 +35,8 @@
   </template>
   <script src="map/levelmap.js"></script>
   <script src="level.js"></script>
+  <script src="tutorial/tutorial.js"></script>
+  <script src="tutorial/tutorialMap.js"></script>
   <script src="overlay.js"></script>
   <script src="torch.js"></script>
   <script src="main.js"></script>
@@ -131,8 +133,12 @@
             this.showProgress();
             this.$$('finish-game-request').refresh();
           }.bind(this);
+          var onTutorialFinished = function(){
+            this.showLevelSelection();
+          }.bind(this);
           var control = {
-            onLevelFinished: onFinishCallback
+            onLevelFinished: onFinishCallback,
+            onTutorialFinished: onTutorialFinished
           };
           this.main = new Main(this.stage, this.width, this.height, this.assetLoader, control);
           this.$.demoCanvas.focus();

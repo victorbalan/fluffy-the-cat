@@ -22,6 +22,17 @@ class Overlay {
     this.overlay.cache(0, 0, this.width, this.height);
   }
 
+  showAll() {
+    this.overlay.visible = true;
+    this.bigOverlay.visible = true;
+    this.stage.update();
+  }
+
+  hideAll() {
+    this.overlay.visible = false;
+    this.bigOverlay.visible = false;
+    this.stage.update();
+  }
   show() {
     this.overlay.visible = true;
     this.stage.update();

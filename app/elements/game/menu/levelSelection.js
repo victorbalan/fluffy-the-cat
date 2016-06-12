@@ -1,6 +1,6 @@
 class LevelSelectionFluffy {
   // TODO - further refactor.
-  constructor(stage, gameConfig, inputProcessor, mapCreator, onLevelSelect) {
+  constructor(stage, gameConfig, inputProcessor, mapCreator, onTutorialSelect) {
     this.stage = stage;
     this.inputProcessor = inputProcessor;
     this.width = gameConfig.width;
@@ -9,6 +9,7 @@ class LevelSelectionFluffy {
     this.mapCreator = mapCreator;
 
     this.stage.enableMouseOver(10);
+    this.onTutorialSelect = onTutorialSelect;
   }
 
   tickListener(event) {
@@ -78,7 +79,7 @@ class LevelSelectionFluffy {
 
     tutorial.hitArea = this._hitArea(0, 0, 100, 40);
     tutorial.addEventListener('click', function (evt) {
-      alert('Tutorial')
+      self.onTutorialSelect();
     });
     this.stage.addChild(tutorial);
     this.stage.update();
