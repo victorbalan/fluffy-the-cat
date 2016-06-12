@@ -21,7 +21,7 @@ class TextObjectCreator {
 
     if(withHitArea){
       console.log(text.length);
-      txt.hitArea = this._hitArea(0, 0, 40, 40);
+      txt.hitArea = this._hitArea(-40, -40, 100, 100);
     }
 
     txt.addEventListener('mouseover', this._mouseOver.bind(this));

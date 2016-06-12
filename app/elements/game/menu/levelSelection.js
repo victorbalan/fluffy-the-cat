@@ -19,17 +19,29 @@ class LevelSelectionFluffy {
 
   show(mapInfo, finishedGames, onLevelSelect) {
     var self = this;
+    this.onLevelSelect = onLevelSelect;
     var events = mapInfo.events;
     this.map = new LevelSelectionMap(mapInfo.map, events, finishedGames, this.gameConfig, this.mapCreator, onLevelSelect);
     this.map.addToStage(this.stage);
 
-    this.player = new Player(this.map.current.x - this.map.current.x / 2, this.map.current.y - this.map.current.y / 2, this.gameConfig.tileDimension);
+    var x = this.gameConfig.width / 2 - this.map.current.x;
+    var y = this.gameConfig.height / 2 - this.map.current.y;
+
+    this.player = new Player(this.gameConfig.width / 2, this.gameConfig.height / 2, this.gameConfig.tileDimension);
     this.player.stand();
     this.player.addToStage(this.stage);
 
-    this.move(-this.map.current.x / 2, -this.map.current.y / 2);
+    this.move(x, y);
 
     this.drawTopMenu();
+  }
+
+  enter(){
+    var level = this.map.getLevel(this.player.getBounds());
+    if(!level){
+      return;
+    }
+    this.onLevelSelect(level);
   }
 
   checkPlayerMovement() {

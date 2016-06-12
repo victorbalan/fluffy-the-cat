@@ -183,6 +183,10 @@
           this.currentMenu = 'levelSelection';
           var element = this;
           this.main.showLevelSelection(this.levelsMap, this.finishedGames, function (levelId) {
+            if(levelId === element.levelId){
+              element._levelChanged(element.level);
+              return;
+            }
             element.showProgress();
             element.levelId = levelId;
             element.$$('start-level-request').refresh();

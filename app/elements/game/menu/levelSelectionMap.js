@@ -72,4 +72,20 @@ class LevelSelectionMap {
     return this.map.getIntersectionType(player);
   }
 
+  getLevel(player) {
+    for (var i = 0; i < this.textObjects.length; i++) {
+      if (this.intersects(player,
+          Object.assign({}, this.textObjects[i].getBounds(), {x: this.textObjects[i].x, y: this.textObjects[i].y}))) {
+        return this.textObjects[i].levelId;
+      }
+    }
+    return null;
+  }
+
+  intersects(rect1, rect2) {
+    return !(rect1.x >= rect2.x + rect2.width
+    || rect1.x + rect1.width <= rect2.x
+    || rect1.y >= rect2.y + rect2.height
+    || rect1.y + rect1.height <= rect2.y);
+  }
 }

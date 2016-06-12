@@ -3,6 +3,7 @@ const KEYCODE_RIGHT = 39;
 const KEYCODE_UP = 38;
 const KEYCODE_DOWN = 40;
 const KEYCODE_G = 71;
+const KEYCODE_ENTER = 13;
 
 class InputProcessor {
   constructor() {
@@ -58,6 +59,11 @@ class InputProcessor {
         self.parent.godMode();
         return;
       }
+      if (e.keyCode === KEYCODE_ENTER) {
+        // TODO make game an interface than can process any keys except of movement
+        self.parent.enter();
+        return;
+      }
       this.movementKeysPressed[e.keyCode] = 1;
       if (!this.firstMovementKey) {
         this.firstMovementKey = e.keyCode;
@@ -78,7 +84,7 @@ class InputProcessor {
   }
 
   preventIfGameKey(e) {
-    if (e.keyCode === KEYCODE_G || e.keyCode === KEYCODE_LEFT || e.keyCode === KEYCODE_RIGHT || e.keyCode === KEYCODE_UP || e.keyCode === KEYCODE_DOWN) {
+    if (e.keyCode === KEYCODE_G || e.keyCode === KEYCODE_LEFT || e.keyCode === KEYCODE_RIGHT || e.keyCode === KEYCODE_UP || e.keyCode === KEYCODE_DOWN || e.keyCode === KEYCODE_ENTER) {
       e.preventDefault();
       return true;
     }

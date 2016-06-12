@@ -24,6 +24,10 @@ class Main {
   }
 
   showLevelSelection(levelsMap, finishedGames, onLevelSelectCallback){
+    if(!this.tutorialStarted && (!finishedGames || finishedGames.length === 0)){
+      this.tutorialStarted = true;
+      return this.startTutorial();
+    }
     createjs.Ticker.removeAllEventListeners('tick');
     createjs.Ticker.addEventListener('tick', this.levelSelection.tickListener.bind(this.levelSelection));
     this.stage.removeAllChildren();
