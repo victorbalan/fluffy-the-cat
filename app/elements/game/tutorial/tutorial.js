@@ -113,6 +113,10 @@ class Tutorial {
     }
     if(this.events[event] === true){ return; }
     this.inputDisabled = true;
+    var self = this;
+    setTimeout(function(){
+      self.inputDisabled = false;
+    }, 2000);
     switch(event){
       case 'overlay':
         this.text.text = 'You will not see so much in real life. You`ll see just as much as if you had a torch.';
@@ -133,7 +137,6 @@ class Tutorial {
         break;
     }
     this.events[event] = true;
-    this.inputDisabled = false;
   }
 
   coldHot() {
