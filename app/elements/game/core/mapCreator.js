@@ -54,7 +54,7 @@ class MapCreator {
     }
     map.container.cache(0, 0, dimension * level.length, dimension * level.length);
 
-    map.move = function(x, y){
+    map.move = function (x, y) {
       this.container.x += x;
       this.container.y += y;
       this.objects.forEach(function (object) {
@@ -64,7 +64,7 @@ class MapCreator {
     };
 
     var self = this;
-    map.getIntersectionType = function(rect){
+    map.getIntersectionType = function (rect) {
       for (var i = 0; i < this.objects.length; i++) {
         if (this.objects[i].collisionType !== 'none' && self.intersects(this.objects[i], rect)) {
           return this.objects[i].collisionType;
@@ -72,6 +72,36 @@ class MapCreator {
       }
       return 'none';
     };
+
+    map.getMaxMoveWithIntersectionType = function (rect, x, y) {
+      var testX = Object.assign({}, rect);
+      testX.x += x;
+      var testY = Object.assign({}, rect);
+      testY.y += y;
+      var data = {
+        intersections: [],
+        max: {
+          x: x,
+          y: y
+        }
+      };
+      for (var i = 0; i < this.objects.length; i++) {
+        if (this.objects[i].collisionType !== 'none' && self.intersects(this.objects[i], testX)) {
+          data.max.x = 0;
+          data.intersections.push(this.objects[i].collisionType);
+          break;
+        }
+      }
+      for (var i = 0; i < this.objects.length; i++) {
+        if (this.objects[i].collisionType !== 'none' && self.intersects(this.objects[i], testY)) {
+          data.max.y = 0;
+          data.intersections.push(this.objects[i].collisionType);
+          break;
+        }
+      }
+      return data;
+    };
+
 
     // ADD BOUNDARIES
     // TODO: fix boundaries

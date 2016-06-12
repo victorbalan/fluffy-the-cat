@@ -51,51 +51,23 @@ class Level {
     if(!playerMovement){
       return;
     }
-
-    var toPlay = playerMovement.animation;
-    var x = playerMovement.x * this.gameConfig.speed, y = playerMovement.y * this.gameConfig.speed;
-
-    // TODO: refactor
-    var bounds = this.player.getBounds();
-    bounds.x = bounds.x - x;
-    switch (this.map.getIntersectionType(bounds)) {
-      case 'collision':
-        x = 0;
-        toPlay.x = [];
-        break;
-      case 'finish':
+    var moveInfo = this.map.map.getMaxMoveWithIntersectionType(this.player.getBounds(), -playerMovement.x * this.gameConfig.speed, -playerMovement.y * this.gameConfig.speed);
+    for (var i = 0; i < moveInfo.intersections.length; i++) {
+      if (moveInfo.intersections[i] === 'finish') {
         this.finished = true;
         this.onFinish();
-        console.log('ggwp');
-        break;
+        return console.log('ggwwp');
+      }
     }
-    var bounds = this.player.getBounds();
-    bounds.y = bounds.y - y;
-    switch (this.map.getIntersectionType(bounds)) {
-      case 'collision':
-        y = 0;
-        toPlay.y = [];
-        break;
-      case 'finish':
-        this.finished = true;
-        this.onFinish();
-        console.log('ggwp');
-        break;
-    }
-    var toPlayValue = '';
-    if (toPlay.x.length > 0) {
-      toPlayValue = toPlay.x[0]
-    } else {
-      toPlayValue = toPlay.y[0]
-    }
-    this.player.goToAndPlay(toPlayValue);
+    var x = -moveInfo.max.x;
+    var y = -moveInfo.max.y;
+    this.player.goToAndPlay(playerMovement.animation);
 
     if (x === 0 && y === 0) {
       this.player.stand();
       return;
     }
 
-    // TODO: end refactor
     this.map.move(x, y);
     // this.overlay.move(x, y);
     this.steps++;

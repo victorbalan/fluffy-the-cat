@@ -39,6 +39,11 @@ class InputProcessor {
       y += -1;
       animation.y.push('down');
     }
+    if (animation.x.length > 0) {
+      animation = animation.x[0]
+    } else {
+      animation = animation.y[0]
+    }
     return {x: x, y: y, animation: animation};
   }
 

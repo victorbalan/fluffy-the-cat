@@ -25,72 +25,29 @@ class LevelSelectionFluffy {
     this.player = new Player(this.map.current.x - this.map.current.x / 2, this.map.current.y - this.map.current.y / 2, this.gameConfig.tileDimension);
     this.player.stand();
     this.player.addToStage(this.stage);
-    
+
     this.move(-this.map.current.x / 2, -this.map.current.y / 2);
 
     this.drawTopMenu();
   }
 
   checkPlayerMovement() {
-    if (this.finished) {
-      return;
-    }
     var playerMovement = this.inputProcessor.getPlayerMovement();
     if (!playerMovement) {
       return;
     }
 
-    var toPlay = playerMovement.animation;
-    var x = playerMovement.x * this.gameConfig.speed, y = playerMovement.y * this.gameConfig.speed;
-
-    // // TODO: refactor
-    var bounds = this.player.getBounds();
-    bounds.x = bounds.x - x;
-    switch (this.map.getIntersectionType(bounds)) {
-      case 'collision':
-        x = 0;
-        toPlay.x = [];
-        break;
-      case 'finish':
-        this.finished = true;
-        this.onFinish();
-        console.log('ggwp');
-        break;
-    }
-    var bounds = this.player.getBounds();
-    bounds.y = bounds.y - y;
-    switch (this.map.getIntersectionType(bounds)) {
-      case 'collision':
-        y = 0;
-        toPlay.y = [];
-        break;
-      case 'finish':
-        this.finished = true;
-        this.onFinish();
-        console.log('ggwp');
-        break;
-    }
-    var toPlayValue = '';
-    if (toPlay.x.length > 0) {
-      toPlayValue = toPlay.x[0]
-    } else {
-      toPlayValue = toPlay.y[0]
-    }
-    this.player.goToAndPlay(toPlayValue);
+    var moveInfo = this.map.map.getMaxMoveWithIntersectionType(this.player.getBounds(), -playerMovement.x * this.gameConfig.speed, -playerMovement.y * this.gameConfig.speed);
+    var x = -moveInfo.max.x;
+    var y = -moveInfo.max.y;
+    this.player.goToAndPlay(playerMovement.animation);
 
     if (x === 0 && y === 0) {
       this.player.stand();
       return;
     }
 
-    // TODO: end refactor
     this.move(x, y);
-    // this.overlay.move(x, y);
-    this.steps++;
-    if (Math.floor(this.steps / 5) > this.moves) {
-      this.moves = this.steps / 5;
-      // console.log(this.moves , 'moves')
-    }
   }
 
   move(x, y) {
