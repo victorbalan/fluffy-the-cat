@@ -8,11 +8,11 @@ class Tutorial {
     this.onFinish = onFinishCallback;
     this.gameConfig = gameConfig;
 
-    this.events = {
-      'overlay': false,
-      'progress': false
-    }
 
+    this.textObjectCreator = new TextObjectCreator();
+    this.dialog = new Dialog(this.textObjectCreator, gameConfig);
+
+    this.reset();
   }
 
   tickListener(event) {
@@ -21,13 +21,31 @@ class Tutorial {
     this.stage.update(event);
   }
 
-  start() {
-    this.textObjectCreator = new TextObjectCreator();
+  enter(){
+    this.dialog.clickOk();
+  }
 
-    this.text = this.textObjectCreator.text('Welcome to Fluffy the Cat. Your job is to get to the end of the maze.',
-      "bold 20px Arial", 100, this.gameConfig.height - 100, {
-      color: 'green'
-    }, true);
+  reset(){
+    var self = this;
+    this.dialog.setOnOkClickListener(function () {
+      self.dialog.hide();
+      self.inputDisabled = false;
+    });
+    this.events = {
+      'overlay': false,
+      'overlay-global': false,
+      'progress': false
+    };
+  }
+
+  start() {
+    this.reset();
+    this.inputDisabled = true;
+    this.dialog.setText('Welcome to Fluffy the Cat!\n' +
+      'Your job is to get to the end of the maze.\n' +
+      'To move Fluffy you can use the arrow keys \n from your keyboard.\n' +
+      'You can press enter to dismiss the dialog.');
+    this.dialog.show();
     var level = [
       ['w', 'w', 'w', 'w', 'w', 'w'],
       ['w', 'br', 'hor', 'bl', 'w', 'w'],
@@ -55,12 +73,11 @@ class Tutorial {
     this.overlay = new Overlay(this.stage, this.gameConfig, this.player);
     this.overlay.hideAll();
 
-    this.stage.addChild(this.text);
+    this.dialog.addToStage(this.stage);
     this.stage.update();
 
     this.steps = 0;
     this.moves = 0;
-    // this.overlay = new Overlay(this.stage, this.gameConfig, this.player);
 
     this.initialFinishDistance = this.getDistanceToFinish();
   }
@@ -82,7 +99,18 @@ class Tutorial {
     for (var i = 0; i < moveInfo.intersections.length; i++) {
       if (moveInfo.intersections[i] === 'finish') {
         this.finished = true;
-        this.onFinish();
+        this.dialog.setText('You finished the tutorial. Good job!\n' +
+          'Now we`ll take you to the level selection menu.\nHere you can use the arrows to explore the map \n' +
+          'and click the level you want to play.\n' +
+          'Yellow is the current level.\n' +
+          'Gray is an unavailable level.\n' +
+          'Green is an already completed level.\n');
+        this.dialog.show();
+        var self = this;
+        this.dialog.setOnOkClickListener(function(){
+          console.log('onFinish')
+          self.onFinish();
+        });
         return console.log('ggwwp');
       }
     }
@@ -107,40 +135,47 @@ class Tutorial {
     }
   }
 
-  addEvent(event){
-    if(!event){
+  addEvent(event) {
+    if (!event) {
       return;
     }
-    if(this.events[event] === true){ return; }
+    if (this.events[event] === true) {
+      return;
+    }
     this.inputDisabled = true;
     var self = this;
-    setTimeout(function(){
-      self.inputDisabled = false;
-    }, 2000);
-    switch(event){
+    switch (event) {
       case 'overlay':
-        this.text.text = 'You will not see so much in real life. You`ll see just as much as if you had a torch.';
-        this.text.color = 'yellow';
+        this.dialog.setText('You will not see so much in real life.\nYou`ll see just as much as if you had a torch.');
         this.overlay.showAll();
         break;
       case 'progress':
-        this.text.text = 'To help you throughout the game you have your cat senses with you.\nThe closer you are to the finish the bigger the red fill becomes.';
-        this.text.color = 'red';
+        this.dialog.setText('To help you throughout the game you have \nyour cat senses with you.\n' +
+          'Your cat senses are represented by the \n' +
+          'circle in the top of the screen.\n' +
+          'The closer you are to the finish, the bigger \n' +
+          'the orange fill becomes.\n' +
+          'It is like an cold hot game.\n' +
+          'Bear in mind that your senses show you the \n' +
+          'relative position to the finish and not \n' +
+          'the correct road.');
         this.progress = new createjs.Shape();
-        this.progress.x = this.gameConfig.width / 2 - 40;
+        this.progress.x = this.gameConfig.width / 2;
         this.progress.y = 50;
         this.stage.addChild(this.progress);
         break;
       case 'overlay-global':
-        this.text.color = 'DeepSkyBlue';
-        this.text.text = 'You can press G to turn on/off a more powerful flashlight.';
+        this.dialog.setText('You can press G to turn on/off a more \npowerful flashlight.\n' +
+          'Keep in mind that the battery lasts for 5 seconds \n' +
+          'and the recharge time is 1 minute.');
         break;
     }
+    this.dialog.show();
     this.events[event] = true;
   }
 
   coldHot() {
-    if(!this.progress){
+    if (!this.progress) {
       return;
     }
     var percent = (100 - this.getDistanceToFinish() * 100 / this.initialFinishDistance) / 100;

@@ -33,7 +33,7 @@ class Level {
 
     this.initialFinishDistance = this.getDistanceToFinish();
     this.progress = new createjs.Shape();
-    this.progress.x = this.gameConfig.width / 2 - 40;
+    this.progress.x = this.gameConfig.width / 2;
     this.progress.y = 50;
     this.stage.addChild(this.progress);
   }

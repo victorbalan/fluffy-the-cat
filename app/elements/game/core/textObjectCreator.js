@@ -1,6 +1,26 @@
 class TextObjectCreator {
   constructor(){}
 
+
+  simpleText(text, font, x, y, options, withHitArea) {
+    var txt = new createjs.Text();
+    txt.font = font;
+    txt.text = text;
+    txt.x = x;
+    txt.y = y;
+    if (options) {
+      if (options.color) {
+        txt.color = options.color;
+      }
+      if (options.textAlign) {
+        txt.textAlign = options.textAlign;
+      }
+      if (options.cursor) {
+        txt.cursor = options.cursor;
+      }
+    }
+    return txt;
+  }
   text(text, font, x, y, options, withHitArea) {
     var txt = new createjs.Text();
     txt.font = font;
@@ -20,12 +40,13 @@ class TextObjectCreator {
     }
 
     if(withHitArea){
-      console.log(text.length);
       txt.hitArea = this._hitArea(-40, -40, 100, 100);
     }
 
-    txt.addEventListener('mouseover', this._mouseOver.bind(this));
-    txt.addEventListener('mouseout', this._mouseOut.bind(this));
+    if(options.cursor === 'pointer') {
+      txt.addEventListener('mouseover', this._mouseOver.bind(this));
+      txt.addEventListener('mouseout', this._mouseOut.bind(this));
+    }
 
     return txt;
   }
