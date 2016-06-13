@@ -26,6 +26,7 @@ class Tutorial {
   }
 
   reset(){
+    this.skills = {};
     var self = this;
     this.dialog.setOnOkClickListener(function () {
       self.dialog.hide();
@@ -135,6 +136,22 @@ class Tutorial {
     }
   }
 
+  addSkills() {
+    var self = this;
+    var config = {
+      action: function () {
+        this.overlay.hide();
+      }.bind(self),
+      onEnd: function () {
+        this.overlay.show();
+      }.bind(self)
+    };
+    this.skills.godmode = new Skill(this.gameConfig.width / 2, this.gameConfig.height - this.gameConfig.tileDimension / 2,
+      this.gameConfig, 10000, 5000, config);
+
+    this.skills.godmode.addToStage(this.stage);
+  }
+
   addEvent(event) {
     if (!event) {
       return;
@@ -152,7 +169,7 @@ class Tutorial {
       case 'progress':
         this.dialog.setText('To help you throughout the game you have \nyour cat senses with you.\n' +
           'Your cat senses are represented by the \n' +
-          'circle in the top of the screen.\n' +
+          'circle in the top right of the screen.\n' +
           'The closer you are to the finish, the bigger \n' +
           'the orange fill becomes.\n' +
           'It is like an cold hot game.\n' +
@@ -160,14 +177,17 @@ class Tutorial {
           'relative position to the finish and not \n' +
           'the correct road.');
         this.progress = new createjs.Shape();
-        this.progress.x = this.gameConfig.width / 2;
-        this.progress.y = 50;
+        this.progress.x = this.gameConfig.width - 100;
+        this.progress.y = 100;
         this.stage.addChild(this.progress);
         break;
       case 'overlay-global':
         this.dialog.setText('You can press G to turn on/off a more \npowerful flashlight.\n' +
           'Keep in mind that the battery lasts for 5 seconds \n' +
-          'and the recharge time is 1 minute.');
+          'and the recharge time is 10 seconds.\n' +
+          'The duration and cooldown is displayed in \n' +
+          'the skill box in the bottom of the screen.');
+        this.addSkills();
         break;
     }
     this.dialog.show();
@@ -188,7 +208,10 @@ class Tutorial {
       return;
     }
     this.percent = percent;
-    this.progress.graphics.beginRadialGradientFill(["#ff6600", "#0066ff"], [0, 1], 0, 0, 0, 0, 0, 65 * percent).setStrokeStyle(1).beginStroke("#0066ff").drawCircle(0, 0, 40);
+    this.progress.graphics
+      .beginRadialGradientFill(["#ff6600", "#0066ff"], [0, 1], 0, 0, 0, 0, 0,
+        this.gameConfig.tileDimension  * percent + 5)
+      .setStrokeStyle(1).beginStroke("#0066ff").drawCircle(0, 0, this.gameConfig.tileDimension /2);
   }
 
   getDistanceToFinish() {
@@ -204,12 +227,6 @@ class Tutorial {
   }
 
   godMode() {
-    // TODO - make godmode show exactly a radius of x squares and not the whole map.
-    this.godmode = !this.godmode;
-    if (this.godmode) {
-      this.overlay.hide();
-    } else {
-      this.overlay.show();
-    }
+    this.skills.godmode.use();
   }
 }

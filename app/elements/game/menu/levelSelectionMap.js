@@ -22,11 +22,13 @@ class LevelSelectionMap {
       if (events[i].data.prev == null && (!finishedGames || finishedGames.length === 0)) {
         currentY = y;
         currentX = x;
+        this.currentLevel = events[i].data._id;
       } else if (!!finishedGamesMap[events[i].data._id]) {
         color = 'green';
       } else if (!!finishedGamesMap[events[i].data.prev]) {
         currentY = y;
         currentX = x;
+        this.currentLevel = events[i].data._id;
       } else {
         color = 'grey';
         cursor = undefined;

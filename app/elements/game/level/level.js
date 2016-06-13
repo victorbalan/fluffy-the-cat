@@ -1,4 +1,3 @@
-
 class Level {
   constructor(stage, gameConfig, inputProcessor, mapCreator, onFinishCallback) {
     this.inputProcessor = inputProcessor;
@@ -8,16 +7,16 @@ class Level {
     // TODO - fire event
     this.onFinish = onFinishCallback;
     this.gameConfig = gameConfig;
-
   }
 
-  tickListener(event){
+  tickListener(event) {
     this.checkPlayerMovement();
     this.coldHot();
     this.stage.update(event);
   }
 
   start(level) {
+    this.skills = {};
     this.godmode = false;
 
     this.map = new LevelMap(level, this.gameConfig, this.mapCreator);
@@ -33,9 +32,26 @@ class Level {
 
     this.initialFinishDistance = this.getDistanceToFinish();
     this.progress = new createjs.Shape();
-    this.progress.x = this.gameConfig.width / 2;
-    this.progress.y = 50;
+    this.progress.x = this.gameConfig.width - 100;
+    this.progress.y = 100;
     this.stage.addChild(this.progress);
+    this.addSkills();
+  }
+
+  addSkills() {
+    var self = this;
+    var config = {
+      action: function () {
+        this.overlay.hide();
+      }.bind(self),
+      onEnd: function () {
+        this.overlay.show();
+      }.bind(self)
+    };
+    this.skills.godmode = new Skill(this.gameConfig.width / 2, this.gameConfig.height - this.gameConfig.tileDimension / 2,
+      this.gameConfig, 10000, 5000, config);
+
+    this.skills.godmode.addToStage(this.stage);
   }
 
   clear() {
@@ -48,7 +64,7 @@ class Level {
       return;
     }
     var playerMovement = this.inputProcessor.getPlayerMovement();
-    if(!playerMovement){
+    if (!playerMovement) {
       return;
     }
     var moveInfo = this.map.map.getMaxMoveWithIntersectionType(this.player.getBounds(), -playerMovement.x * this.gameConfig.speed, -playerMovement.y * this.gameConfig.speed);
@@ -84,11 +100,14 @@ class Level {
     // TODO: this makes the game laggy
     // TODO: fix
 
-    if(percent === this.percent){
+    if (percent === this.percent) {
       return;
     }
     this.percent = percent;
-    this.progress.graphics.beginRadialGradientFill(["#ff6600", "#0066ff"], [0, 1], 0, 0, 0, 0, 0, 65 * percent).setStrokeStyle(1).beginStroke("#0066ff").drawCircle(0, 0, 40);
+    this.progress.graphics
+      .beginRadialGradientFill(["#ff6600", "#0066ff"], [0, 1], 0, 0, 0, 0, 0,
+        this.gameConfig.tileDimension * percent + 5)
+      .setStrokeStyle(1).beginStroke("#0066ff").drawCircle(0, 0, this.gameConfig.tileDimension / 2);
   }
 
   getDistanceToFinish() {
@@ -104,12 +123,6 @@ class Level {
   }
 
   godMode() {
-    // TODO - make godmode show exactly a radius of x squares and not the whole map.
-    this.godmode = !this.godmode;
-    if (this.godmode) {
-      this.overlay.hide();
-    } else {
-      this.overlay.show();
-    }
+    this.skills.godmode.use();
   }
 }
