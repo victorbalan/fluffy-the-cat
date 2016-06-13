@@ -15,10 +15,21 @@ class MapCreator {
         i: 0,
         j: 0
       },
-      finish: {},
-      // TODO add boundaries
-      boundaries: []
+      finish: {}
     };
+    // TOP
+    var object =this.gameObjectCreator.wall(0 - dimension, 0 - dimension, this.loader.getResult('w'), dimension * (level[0].length + 2), dimension);
+    map.objects.push(Object.assign({}, object.getBounds(), {collisionType: object.collisionType}));
+    // BOT
+    object = this.gameObjectCreator.wall(0 - dimension, level.length * dimension, this.loader.getResult('w'), dimension * (level.length + 2), dimension);
+    map.objects.push(Object.assign({}, object.getBounds(), {collisionType: object.collisionType}));
+    // LEFT
+    object = this.gameObjectCreator.wall(0 - dimension, 0 - dimension, this.loader.getResult('w'), dimension, dimension * (level.length + 2));
+    map.objects.push(Object.assign({}, object.getBounds(), {collisionType: object.collisionType}));
+    // // RIGHT
+    object = this.gameObjectCreator.wall(level.length * dimension, 0 - dimension, this.loader.getResult('w'), dimension, dimension * (level.length + 2));
+    map.objects.push(Object.assign({}, object.getBounds(), {collisionType: object.collisionType}));
+
     for (var i = 0; i < level.length; i++) {
       for (var j = 0; j < level[i].length; j++) {
         var x = j * dimension;
@@ -103,20 +114,6 @@ class MapCreator {
     };
 
 
-    // ADD BOUNDARIES
-    // TODO: fix boundaries
-    // // TOP
-    // this.objects.push(new Wall((-startj - 2) * this.dimension + this.canvasWidth / 2  + this.dimension / 2,
-    //   (-starti - 2) * this.dimension + this.canvasHeight / 2 + this.dimension / 2, null, (level.length + 3) * this.dimension, this.dimension));
-    // // BOT
-    // this.objects.push(new Wall((-startj - 2) * this.dimension + this.canvasWidth / 2 + this.dimension / 2,
-    //   (level.length - starti - 1) * this.dimension + this.canvasHeight / 2 + this.dimension / 2, null, (level.length + 3) * this.dimension, this.dimension));
-    // // LEFT
-    // this.objects.push(new Wall((-startj - 2) * this.dimension + this.canvasWidth / 2  + this.dimension / 2,
-    //   (-starti - 1) * this.dimension + this.canvasHeight / 2  + this.dimension / 2, null, this.dimension, (level.length + 1)* this.dimension));
-    //
-    // this.objects.push(new Wall(( level.length - startj - 1) * this.dimension + this.canvasWidth / 2 + this.dimension / 2,
-    //   (-starti - 1) * this.dimension + this.canvasHeight / 2 + this.dimension / 2, null, this.dimension, (level.length + 1) * this.dimension));
     return map;
   }
 
