@@ -105,7 +105,9 @@ class Tutorial {
           'and click the level you want to play.\n' +
           'Yellow is the current level.\n' +
           'Gray is an unavailable level.\n' +
-          'Green is an already completed level.\n');
+          'Green is an already completed level.\n' +
+          'You can use ENTER in the selection screen \n' +
+          'to start the current level.');
         this.dialog.show();
         var self = this;
         this.dialog.setOnOkClickListener(function(){

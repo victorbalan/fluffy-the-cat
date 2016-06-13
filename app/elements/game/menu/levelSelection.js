@@ -38,11 +38,12 @@ class LevelSelectionFluffy {
   }
 
   enter(){
-    var level = this.map.getLevel(this.player.getBounds());
-    if(!level){
-      return;
-    }
-    this.onLevelSelect(level);
+    this.onLevelSelect(this.map.currentLevel);
+    // TODO: enable when fluffy will be present in the level selection
+    // var level = this.map.getLevel(this.player.getBounds());
+    // if(!level){
+    //   return;
+    // }
   }
 
   checkPlayerMovement() {

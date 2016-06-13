@@ -104,7 +104,7 @@ class Level {
       return;
     }
     this.percent = percent;
-    this.progress.graphics
+    this.progress.graphics.clear()
       .beginRadialGradientFill(["#ff6600", "#0066ff"], [0, 1], 0, 0, 0, 0, 0,
         this.gameConfig.tileDimension * percent + 5)
       .setStrokeStyle(1).beginStroke("#0066ff").drawCircle(0, 0, this.gameConfig.tileDimension / 2);
